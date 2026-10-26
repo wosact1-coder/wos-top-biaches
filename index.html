@@ -1902,9 +1902,11 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
 
   function viewReport() {
     const r = S.report;
-    const pvp = r.type === 'rally' || r.type === 'garrison' || r.type === 'solo';
-    const rally = r.type === 'rally' || r.type === 'garrison';
-    const types = [['rally', 'Rally'], ['garrison', 'Garrison'], ['solo', '1 vs 1'], ['bear', 'Bear'], ['joe', 'Joe']];
+    // only rallies (attack, or defense = garrison) and 1 vs 1
+    if (r.type !== 'rally' && r.type !== 'solo') r.type = 'rally';
+    const pvp = true;
+    const rally = r.type === 'rally';
+    const types = [['rally', 'Rally'], ['solo', '1 vs 1']];
     const col2 = (label, a, b) => `<div style="display:grid;grid-template-columns:84px minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center"><div class="small" style="color:var(--soft)">${tx(label)}</div>${a}${b}</div>`;
     const numIn = (bind, ph) => `<input class="in" data-rbind="${bind}" value="${esc(getPath(r, bind))}" inputmode="numeric" placeholder="${ph || ''}" style="min-width:0">`;
     const headTE = `<div style="display:grid;grid-template-columns:84px minmax(0,1fr) minmax(0,1fr);gap:6px;font-size:10px;color:var(--muted)"><div></div><div style="text-align:center">${tx('YOU')}</div><div style="text-align:center">${tx('ENEMY')}</div></div>`;
@@ -1915,8 +1917,8 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     const statName = { atk: 'Attack', def: 'Defense', leth: 'Lethality', hp: 'Health' };
     return `<div class="card blue"><div class="note">${tx('You only need the <b>first screen</b> of the battle report in game (Battle Overview). Copy the numbers from top to bottom.')}</div></div>
       <section class="card"><div class="card-title">1 · ${tx('Battle')}</div>
-        <div class="grid5" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px">${types.map(([k, l]) => `<button class="pill ${r.type === k ? 'on' : ''}" style="padding:9px 1px;font-size:11px;overflow:hidden;text-overflow:ellipsis" data-act="rtype" data-v="${k}">${tx(l)}</button>`).join('')}</div>
-        ${r.type === 'rally' || r.type === 'solo' ? `<div class="seg" style="grid-template-columns:1fr 1fr"><button class="${r.role === 'attacker' ? 'on' : ''}" data-act="rrole" data-v="attacker">${tx('I attacked')}</button><button class="${r.role === 'defender' ? 'on' : ''}" data-act="rrole" data-v="defender">${tx('I defended')}</button></div>` : ''}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">${types.map(([k, l]) => `<button class="pill ${r.type === k ? 'on' : ''}" style="padding:9px 1px;font-size:11px;overflow:hidden;text-overflow:ellipsis" data-act="rtype" data-v="${k}">${tx(l)}</button>`).join('')}</div>
+        <div class="seg" style="grid-template-columns:1fr 1fr"><button class="${r.role === 'attacker' ? 'on' : ''}" data-act="rrole" data-v="attacker">${tx('I attacked')}</button><button class="${r.role === 'defender' ? 'on' : ''}" data-act="rrole" data-v="defender">${tx(rally ? 'I defended (garrison)' : 'I defended')}</button></div>
         ${pvp ? `<div class="grid2"><button class="pill ${r.result === 'win' ? 'on' : ''}" data-act="rres" data-v="win">${tx('VICTORY')}</button><button class="pill ${r.result === 'loss' ? 'on' : ''}" data-act="rres" data-v="loss">${tx('DEFEAT')}</button></div>` : ''}
         <label class="row small" style="gap:8px;cursor:pointer"><input type="checkbox" data-rcheck="mine"${r.mine ? ' checked' : ''} style="width:18px;height:18px;accent-color:#F59E0B">${tx('This is my report (my side is me)')}</label>
       </section>
@@ -1930,7 +1932,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
         <div class="small" style="border-top:1px solid #1E2A44;padding-top:8px">${tx('Troops per type (from "Troop Power Comparison") · optional')}</div>
         ${[['myRatio', tx('You')], ['enRatio', tx('Enemy')]].map(([b, l]) => `<div style="display:grid;grid-template-columns:84px repeat(3,minmax(0,1fr));gap:6px;align-items:center"><div class="small" style="color:var(--soft)">${l}</div>${TYPES.map((t) => `<input class="in mini" style="color:var(--${t})" data-rbind="${b}.${t}" value="${esc(r[b][t])}" placeholder="${t}" inputmode="numeric">`).join('')}</div>`).join('')}
       </section>` : ''}
-      ${rally || r.type === 'bear' ? `<section class="card warm"><div class="card-title" style="color:var(--gold)">${tx('First 4 joiners activated')}</div>
+      ${rally ? `<section class="card warm"><div class="card-title" style="color:var(--gold)">${tx('First 4 joiners activated')}</div>
         ${rally ? headTE : ''}
         ${[0, 1, 2, 3].map((i) => `<div style="display:grid;grid-template-columns:20px minmax(0,1fr)${rally ? ' minmax(0,1fr)' : ''};gap:6px;align-items:center"><div class="rank">${i + 1}</div>${heroSelect(`data-rbind="myJoiners.${i}"`, null, r.myJoiners[i], '—')}${rally ? heroSelect(`data-rbind="enJoiners.${i}"`, null, r.enJoiners[i], '—') : ''}</div>`).join('')}
         <div class="small">${tx('Only the hero in the 1st slot of each joiner. The same hero can be picked more than once.')}</div></section>` : ''}
@@ -1946,8 +1948,6 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
         <div style="display:grid;grid-template-columns:minmax(0,1fr) 96px${pvp ? ' 96px' : ''};gap:6px;align-items:center;border-top:1px solid #1E2A44;padding-top:6px"><div class="small" style="color:var(--soft)">${tx('Pet skills active')}</div><label class="nocheck"><input type="checkbox" data-rcheck="pets.my"${r.pets.my ? ' checked' : ''} aria-label="${tx('Pet skills active')} ${tx('You')}"></label>${pvp ? `<label class="nocheck"><input type="checkbox" data-rcheck="pets.en"${r.pets.en ? ' checked' : ''} aria-label="${tx('Pet skills active')} ${tx('Enemy')}"></label>` : ''}</div>
       </section>
       <section class="card">
-        ${r.type === 'bear' ? `<div class="field"><label>${tx('DAMAGE DEALT')}</label><input class="in" data-rbind="bearDamage" value="${esc(r.bearDamage)}" inputmode="numeric"></div>` : ''}
-        ${r.type === 'joe' ? `<div class="field"><label>${tx('CRAZY JOE LEVEL')}</label><input class="in" data-rbind="joeLevel" value="${esc(r.joeLevel)}" inputmode="numeric"></div>` : ''}
         <div class="field"><label>${tx('NOTES')} · ${tx('optional')}</label><input class="in" data-rbind="notes" value="${esc(r.notes)}" maxlength="300"></div></section>
       <div style="display:grid;grid-template-columns:${pvp ? '1fr 1.4fr' : '1fr'};gap:8px">
         <button class="btn ghost" style="font-family:Rajdhani,sans-serif;font-weight:700;letter-spacing:.1em;font-size:15px" data-act="send-report" data-v="save">${tx('SAVE')}</button>
@@ -2027,7 +2027,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     else if (act === 'enemy-clear') { S.enemy[v] = blankEnemy(); render(); }
     else if (act === 'recalc') { render(); }
     else if (act === 'refine') { const c = $('#enemy-card'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    else if (act === 'rtype') { S.report.type = v; if (v === 'garrison') S.report.role = 'defender'; render(); }
+    else if (act === 'rtype') { S.report.type = v; render(); }
     else if (act === 'rrole') { S.report.role = v; render(); }
     else if (act === 'rres') { S.report.result = v; render(); }
     else if (act === 'send-report') { sendReport(el, v === 'use'); }
@@ -2132,7 +2132,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
   function predictInput(r) {
     const list = (o) => TYPES.map((t) => o[t]).filter(Boolean);
     return {
-      type: r.type === 'solo' ? 'solo' : 'rally', role: r.type === 'garrison' ? 'defender' : r.role,
+      type: r.type === 'solo' ? 'solo' : 'rally', role: r.role,
       myHeroes: list(r.my), enemyHeroes: list(r.en), myTotal: r.myTotal, enTotal: r.enTotal, myRatio: r.myRatio, enRatio: r.enRatio,
       myBonus: filledBonus(r.myBonus) ? r.myBonus : null, enBonus: filledBonus(r.enBonus) ? r.enBonus : null,
       myJoiners: r.myJoiners.filter(Boolean), enJoiners: r.enJoiners.filter(Boolean),
@@ -2159,7 +2159,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     }
     // 2) the enemy, as seen in the report, goes into the matching formation
     const key = r.type === 'solo' ? 'solo' : 'rally';
-    const defending = r.type === 'garrison' || r.role === 'defender';
+    const defending = r.role === 'defender';
     S.enemy[key] = {
       heroes: TYPES.map((t) => ({ n: r.en[t] || '' })), ratio: pctRatio(r.enRatio),
       bonus: JSON.parse(JSON.stringify(r.enBonus)), joiners: r.enJoiners.filter(Boolean),
@@ -2170,7 +2170,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
   }
   async function sendReport(btn, use) {
     const r = S.report;
-    const pvp = r.type === 'rally' || r.type === 'garrison' || r.type === 'solo';
+    const pvp = true;
     if (pvp && !r.result) { toast(tx('Choose victory or defeat first')); return; }
     let prediction = null;
     if (pvp) { try { prediction = WOS.predict(account(), predictInput(r)); } catch (e) { prediction = null; } }
@@ -2179,7 +2179,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     const label = btn.textContent;
     btn.disabled = true; btn.textContent = tx('SENDING…');
     try {
-      const payload = Object.assign({}, r, { role: r.type === 'garrison' ? 'defender' : r.role, prediction, actual, profileGen: currentGen(), sentAt: new Date().toISOString() });
+      const payload = Object.assign({}, r, { role: r.role, garrison: r.type === 'rally' && r.role === 'defender', prediction, actual, profileGen: currentGen(), sentAt: new Date().toISOString() });
       const res = await api('report', { user: S.session.user, code: S.session.code, report: payload });
       if (!res.ok) throw new Error(res.error || 'error');
       S.lastPrediction = prediction
