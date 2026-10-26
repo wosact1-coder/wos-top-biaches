@@ -177,9 +177,16 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     return Number.isFinite(x) ? x : d;
   }
 
+  // Share of the hero's 5-star expedition Attack/Defense at (stars, star pieces), measured in game
+  // (Philly/Norah/Edith/Hendrik 4★ = 69.33%, Greg/Sonya 4/1 = 73.8%, Alonso 4/3 = 82.9%, Renee 4/4 = 87.4%,
+  //  Lynn 3/1 = 50.6%, Zinman 3/2 = 53.9%, Logan 3/4 = 60.3%, Ahmose 3/5 = 63.5%, Natalia 1★ = 20.6%, Gordon 1/2 = 23.9%).
+  // 0★ and 2★ are interpolated.
+  const STAR_BASE = [0.15, 0.206, 0.33, 0.4742, 0.6933, 1];
+  const STAR_STEP = [0.0093, 0.0164, 0.024, 0.0322, 0.0451, 0];
   function starFactor(st, sp) {
-    const s = Math.min(5, (st || 0) + (sp || 0) / 6);
-    return 0.4 + 0.6 * (s / 5);
+    const s = Math.max(0, Math.min(5, Math.floor(st || 0)));
+    const p = s >= 5 ? 0 : Math.max(0, Math.min(5, sp || 0));
+    return STAR_BASE[s] + STAR_STEP[s] * p;
   }
 
   // Skill level a hero can have: rule "skill level <= stars + 1"; user agreed 4★+ counts as max.
@@ -628,10 +635,10 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     cs.sort((a, b) => b.score - a.score);
     // community floors the model can't see (turrets/front line): garrisons >= 50% infantry, attacks >= 25%; lancers >= 10%
     const minInf = mode === 'defense' ? 50 : 25;
-    const grid = ratioGrid(minInf, 10, 0, 5);
+    const grid = opts.grid || ratioGrid(minInf, 10, 0, 5);
     // heroes and ratio interact (Sonya shines with many lancers, Mia with few): give the top hero
     // combos a coarse ratio search before picking the finalists, so no lineup is judged at one ratio only
-    const coarse = ratioGrid(minInf, 10, 0, 10);
+    const coarse = opts.grid || ratioGrid(minInf, 10, 0, 10);
     // candidates: the 8 best lineups plus, for every hero, the best lineup that uses that hero
     const cand = cs.slice(0, 8);
     TYPES.forEach((t) => {
