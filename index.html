@@ -1,0 +1,1724 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>WOS-TOP BIACHES</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230F1A30' stroke='%237DD3FC' stroke-width='6'/%3E%3Ctext x='50' y='64' font-size='40' text-anchor='middle' fill='%23F59E0B' font-family='Arial' font-weight='bold'%3EWT%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0A1020; --bg2: #0D1526; --card: #111A2E; --card2: #16223B; --line: #24324F; --line2: #2A3A5C;
+  --text: #E6EEF8; --muted: #93A4BF; --soft: #C9D6EA; --ice: #7DD3FC; --ember: #F59E0B; --gold: #FCD34D;
+  --inf: #60A5FA; --lan: #FCD34D; --mar: #F97316; --ok: #86EFAC; --bad: #FCA5A5;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #070C18; color: var(--text); font-family: Inter, system-ui, sans-serif; }
+body { min-height: 100vh; display: flex; justify-content: center; }
+#app { width: 100%; max-width: 520px; min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; }
+a { color: var(--ice); }
+button, input, select { font: inherit; color: inherit; }
+.h-font { font-family: Rajdhani, sans-serif; font-weight: 700; letter-spacing: 0.06em; }
+
+header.top { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #1E2A44; position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 5; }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo-sm { width: 38px; height: 38px; flex: none; border-radius: 50%; background: #0F1A30; border: 2px solid var(--ice); box-shadow: 0 0 0 2px var(--ember); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.brand-name { font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 0.06em; line-height: 1; white-space: nowrap; }
+.brand-name span { color: var(--ember); }
+.brand-sub { font-size: 11px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip { font-size: 12px; font-weight: 600; color: var(--muted); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; }
+.chip-btn { cursor: pointer; }
+
+main { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 14px 16px 90px; }
+nav.bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 520px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid #1E2A44; background: var(--bg2); padding: 8px 4px calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 5; }
+nav.bottom button { background: none; border: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--muted); font-size: 11px; font-weight: 600; padding: 4px 0; cursor: pointer; }
+nav.bottom button.on { color: var(--ice); }
+
+.seg { display: grid; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px; gap: 2px; }
+.seg button { background: transparent; color: var(--muted); border: 0; border-radius: 9px; padding: 9px 4px; font-weight: 600; font-size: 13px; cursor: pointer; }
+.seg button.on { background: #1B2A47; color: var(--text); }
+.seg.warm button.on { background: #2A1B0A; color: var(--gold); }
+.tabs { display: grid; gap: 4px; }
+.tabs button { background: var(--card); color: var(--muted); border: 1px solid var(--line); border-radius: 9px; padding: 9px 0; font-weight: 600; font-size: 12px; cursor: pointer; }
+.tabs button.on { background: #1B2A47; color: var(--text); border-color: #3B5687; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.card.warm { background: #1E1708; border-color: #6B4A12; }
+.card.red { background: #1A1216; border-color: #5A2A33; }
+.card.blue { background: #0F1D33; border-color: #23406B; }
+.card-title { font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 0.06em; text-transform: uppercase; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.label { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.note { font-size: 12px; color: var(--soft); line-height: 1.5; }
+.small { font-size: 11px; color: var(--muted); line-height: 1.45; }
+.row { display: flex; align-items: center; gap: 8px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; }
+.in, select.in { width: 100%; background: var(--bg2); border: 1px solid var(--line2); border-radius: 9px; color: var(--text); padding: 9px 10px; font-size: 14px; min-width: 0; }
+.in.big { padding: 13px 14px; font-size: 15px; background: var(--card); }
+.in:focus { outline: 2px solid #3B5687; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--ember); color: #1A1206; border: 0; border-radius: 12px; padding: 14px; font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 16px; letter-spacing: 0.1em; cursor: pointer; min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--ice); border: 1px dashed #3B5687; font-family: Inter, sans-serif; font-size: 14px; letter-spacing: 0; }
+.btn:disabled { opacity: 0.6; cursor: default; }
+.pill { background: var(--bg2); color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
+.pill.on { background: #1B2A47; color: var(--text); border-color: var(--ice); }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.err { color: var(--bad); font-size: 13px; }
+
+.hero-row { display: grid; grid-template-columns: minmax(0, 1fr) 70px 64px 52px; gap: 6px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 7px 8px; }
+.hero-row.owned { border-color: #3B5687; }
+.hero-name { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.ticon { width: 32px; height: 32px; flex: none; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+.ticon.inf { background: #0F2240; color: var(--inf); }
+.ticon.lan { background: #2A240C; color: var(--lan); }
+.ticon.mar { background: #2A1608; color: var(--mar); }
+.gen { font-size: 10px; font-weight: 700; color: var(--soft); background: #1B2A47; border-radius: 5px; padding: 1px 5px; }
+.jtag { font-size: 10px; font-weight: 700; color: var(--gold); }
+.mini { padding: 7px 2px; text-align: center; text-align-last: center; font-size: 13px; }
+select.mini { -webkit-appearance: none; appearance: none; cursor: pointer; }
+
+.unit { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: center; background: var(--bg2); border: 1px solid #1E2A44; border-radius: 10px; padding: 7px 10px; }
+.tag { font-size: 11px; font-weight: 700; border: 1px solid currentColor; border-radius: 6px; padding: 3px 7px; white-space: nowrap; }
+.ratio-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) 84px; gap: 8px; align-items: center; }
+.bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: #1E2A44; }
+.bar i { display: block; height: 100%; }
+.legend { display: flex; gap: 12px; font-size: 11px; color: var(--soft); }
+.legend b { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; }
+.num { font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 15px; text-align: right; }
+.list-row { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: center; background: var(--bg2); border: 1px solid #1E2A44; border-radius: 10px; padding: 8px 10px; }
+.rank { font-family: Rajdhani, sans-serif; font-weight: 700; font-size: 15px; color: var(--gold); }
+
+.gear-grid { display: grid; grid-template-columns: 44px repeat(4, minmax(0, 1fr)); gap: 5px; align-items: stretch; }
+.gear-cell { background: var(--bg2); border: 1px solid var(--line2); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; gap: 3px; }
+.gear-cell select, .gear-cell input { width: 100%; background: transparent; border: 0; color: var(--text); text-align: center; font-size: 12px; padding: 2px 0; }
+.gear-cell input { border-top: 1px solid #1E2A44; }
+.q-L { border-top: 3px solid #EF4444; } .q-M { border-top: 3px solid #F59E0B; } .q-E { border-top: 3px solid #A855F7; } .q-R { border-top: 3px solid #3B82F6; }
+
+.toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #1B2A47; color: var(--text); border: 1px solid #3B5687; border-radius: 10px; padding: 8px 14px; font-size: 13px; z-index: 20; }
+.loading { text-align: center; color: var(--muted); padding: 30px 0; font-size: 13px; }
+.badge-ok { font-size: 11px; font-weight: 600; border: 1px solid currentColor; border-radius: 999px; padding: 3px 8px; }
+.arena-slot { display: flex; flex-direction: column; align-items: center; gap: 5px; background: var(--bg2); border: 1px solid #1E2A44; border-radius: 12px; padding: 10px 6px; text-align: center; }
+.login { padding: 24px 16px; gap: 14px; }
+
+.jname { font-size: 14px; font-weight: 600; }
+.jeff { font-size: 11px; color: var(--muted); margin-top: 2px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+:focus-visible { outline: 2px solid var(--ice); outline-offset: 2px; }
+.savebar { position: sticky; bottom: calc(70px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--card2); border: 1px solid #3B5687; border-radius: 12px; padding: 10px 12px; z-index: 4; }
+.hero-row.not-owned { opacity: 0.6; }
+.nocheck { display: flex; align-items: center; justify-content: center; min-height: 36px; cursor: pointer; }
+.nocheck input { width: 20px; height: 20px; accent-color: #F59E0B; cursor: pointer; }
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>window.WOS_DB = {"heroes":[{"n":"Jeronimo","g":1,"r":"L","t":"inf","ea":260.2,"ed":260.2,"x":{"a":2128,"d":2220,"h":41624},"sk":[{"s":1,"nm":"Battle Manifesto","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Swordmentor","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":3,"nm":"Expert Swordsmanship","c":"dmg","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":0.5,"ch":false},{"s":4,"nm":"Natural Leader","c":"leth","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false,"ex":[{"c":"hp","to":"all","v":[3.0,6.0,9.0,12.0,15.0]}]}],"sw":{"nm":"Dawnbreak","l":62.5,"h":62.5,"b":{"side":"rally","c":"atk"}}},{"n":"Natalia","g":1,"r":"L","t":"inf","ea":200.16,"ed":200.16,"x":{"a":1873,"d":2220,"h":36630},"sk":[{"s":1,"nm":"Feral Protection","c":"red","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":2,"nm":"Queen of the Wild","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":3,"nm":"Call of the Wild","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":4,"nm":"Ursus Strength","c":"atk","to":"all","v":[2.0,4.0,6.0,8.0,10.0],"u":1.0,"ch":false,"ex":[{"c":"def","to":"all","v":[2.0,4.0,6.0,8.0,10.0]}]}],"sw":{"nm":"Gale Force","l":55.5,"h":55.5,"b":{"side":"rally","c":"leth"}}},{"n":"Molly","g":1,"r":"L","t":"lan","ea":200.16,"ed":200.16,"x":{"a":2220,"d":2220,"h":22200},"sk":[{"s":1,"nm":"Snow's Grace","c":"red","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":2,"nm":"Ice Dominion","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true},{"s":3,"nm":"Youthful Rage","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Yeti Spirit","l":50,"h":50,"b":{"side":"def","c":"leth"}}},{"n":"Zinman","g":1,"r":"L","t":"mar","ea":200.16,"ed":200.16,"x":{"a":2697,"d":2220,"h":16650},"sk":[{"s":1,"nm":"Implacable","c":"def","to":"all","v":[2.0,4.0,6.0,8.0,10.0],"u":1.0,"ch":false,"ex":[{"c":"hp","to":"all","v":[2.0,4.0,6.0,8.0,10.0]}]},{"s":3,"nm":"Positional Battler","c":"leth","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Woodpecker","l":50,"h":50,"b":{"side":"def","c":"atk"}}},{"n":"Flint","g":2,"r":"L","t":"inf","ea":240.19,"ed":240.19,"x":{"a":2043,"d":2664,"h":39960},"sk":[{"s":1,"nm":"Pyromaniac","c":"dmg","to":"inf","v":[20.0,40.0,60.0,80.0,100.0],"u":1.0,"ch":false},{"s":2,"nm":"Burning Resolve","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":3,"nm":"Immolation","c":"leth","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Dragonbane","l":60,"h":60,"b":{"side":"def","c":"atk"}}},{"n":"Philly","g":2,"r":"L","t":"lan","ea":240.19,"ed":240.19,"x":{"a":2664,"d":2220,"h":26640},"sk":[{"s":1,"nm":"Vigor Tactics","c":"atk","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false,"ex":[{"c":"def","to":"all","v":[2.0,4.0,6.0,8.0,10.0]}]},{"s":2,"nm":"Dosage Boost","c":"dmg","to":"all","v":[60.0,70.0,80.0,90.0,100.0],"u":0.25,"ch":true},{"s":3,"nm":"Energizing Shot","c":"red","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true}],"sw":{"nm":"Pharmacologica","l":60,"h":60,"b":{"side":"def","c":"hp"}}},{"n":"Alonso","g":2,"r":"L","t":"mar","ea":240.19,"ed":240.19,"x":{"a":3235,"d":2220,"h":19980},"sk":[{"s":1,"nm":"Onslaught","c":"leth","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":2,"nm":"Iron Strength","c":"eatk","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.2,"ch":true},{"s":3,"nm":"Poison Harpoon","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true}],"sw":{"nm":"Captain Ahab","l":60,"h":60,"b":{"side":"rally","c":"leth"}}},{"n":"Logan","g":3,"r":"L","t":"inf","ea":290.23,"ed":290.23,"x":{"a":2554,"d":3330,"h":49950},"sk":[{"s":1,"nm":"Lion's Might","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Lion Intimidation","c":"red","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":3,"nm":"Leader Inspiration","c":"hp","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Fist of Steel","l":70,"h":70,"b":{"side":"def","c":"def"}}},{"n":"Mia","g":3,"r":"L","t":"lan","ea":290.23,"ed":290.23,"x":{"a":3330,"d":3330,"h":33300},"sk":[{"s":1,"nm":"Bad Luck Streak","c":"etaken","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true},{"s":2,"nm":"Lucky Charm","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true},{"s":3,"nm":"Ritual Deciphering","c":"red","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true}],"sw":{"nm":"Fate Crystal","l":70,"h":70,"b":{"side":"rally","c":"atk"}}},{"n":"Greg","g":3,"r":"L","t":"mar","ea":290.23,"ed":290.23,"x":{"a":4045,"d":3330,"h":24974},"sk":[{"s":1,"nm":"Sword of Justice","c":"dmg","to":"all","v":[8.0,16.0,24.0,32.0,40.0],"u":0.2,"ch":true},{"s":2,"nm":"Deterrence of Law","c":"eatk","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.2,"ch":true},{"s":3,"nm":"Law and Order","c":"hp","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"State Edict","l":70,"h":70,"b":{"side":"rally","c":"hp"}}},{"n":"Ahmose","g":4,"r":"L","t":"inf","ea":370.29,"ed":370.29,"x":{"a":3150,"d":4106,"h":61604},"sk":[{"s":1,"nm":"Viper Formation","c":"red","to":"all","v":[10.0,25.0,40.0,55.0,70.0],"u":0.5,"ch":false},{"s":2,"nm":"Prayer of Flame","c":"dmg","to":"inf","v":[20.0,40.0,60.0,80.0,100.0],"u":0.5,"ch":false},{"s":3,"nm":"Blade of Light","c":"dmg","to":"inf","v":[12.0,24.0,36.0,48.0,60.0],"u":0.5,"ch":false,"ex":[{"c":"etaken","to":"inf","v":[5.0,10.0,15.0,20.0,25.0]}]}],"sw":{"nm":"Guardian's Relic","l":92.5,"h":92.5,"b":{"side":"def","c":"hp"}}},{"n":"Reina","g":4,"r":"L","t":"lan","ea":370.29,"ed":370.29,"x":{"a":4106,"d":4106,"h":41070},"sk":[{"s":1,"nm":"Assassin's Instinct","c":"dmg","to":"all","v":[10.0,15.0,20.0,25.0,30.0],"u":1.0,"ch":false},{"s":2,"nm":"Swift Jive","c":"red","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":true},{"s":3,"nm":"Shadow Blade","c":"dmg","to":"lan","v":[60.0,70.0,80.0,90.0,100.0],"u":0.25,"ch":true}],"sw":{"nm":"Ninjaken - Raikiri","l":92.5,"h":92.5,"b":{"side":"rally","c":"leth"}}},{"n":"Lynn","g":4,"r":"L","t":"mar","ea":370.29,"ed":370.29,"x":{"a":4989,"d":4106,"h":30802},"sk":[{"s":1,"nm":"Song of Lion","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":2,"nm":"Melancholic Ballad","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":3,"nm":"Oonai Cadenza","c":"atk","to":"mar","v":[1.0,2.0,3.0,4.0,5.0],"u":0.333,"ch":false}],"sw":{"nm":"Ella's Tear","l":92.5,"h":92.5,"b":{"side":"def","c":"leth"}}},{"n":"Hector","g":5,"r":"L","t":"inf","ea":444.35,"ed":444.35,"x":{"a":3780,"d":4928,"h":73926},"sk":[{"s":1,"nm":"Survival Instincts","c":"red","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":2,"nm":"Rampant","c":"dmg","to":"all","v":[100.0,125.0,150.0,175.0,200.0],"u":0.4,"ch":false},{"s":3,"nm":"Blitz","c":"dmg","to":"all","v":[60.0,70.0,80.0,90.0,100.0],"u":0.25,"ch":true}],"sw":{"nm":"Steel Fangs","l":111,"h":111,"b":{"side":"def","c":"atk"}}},{"n":"Norah","g":5,"r":"L","t":"lan","ea":444.35,"ed":444.35,"x":{"a":4928,"d":4928,"h":49284},"sk":[{"s":1,"nm":"Combined Arms","c":"dmg","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false,"ex":[{"c":"red","to":"all","v":[3.0,6.0,9.0,12.0,15.0]}]},{"s":2,"nm":"Sneak Strike","c":"dmg","to":"lan","v":[10.0,20.0,30.0,40.0,50.0],"u":0.2,"ch":true},{"s":3,"nm":"Momentum","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":0.4,"ch":false,"ex":[{"c":"red","to":"all","v":[5.0,10.0,15.0,20.0,25.0]}]}],"sw":{"nm":"Snow Cruiser","l":111,"h":111,"b":{"side":"def","c":"def"}}},{"n":"Gwen","g":5,"r":"L","t":"mar","ea":444.35,"ed":444.35,"x":{"a":5987,"d":4928,"h":36962},"sk":[{"s":1,"nm":"Eagle Vision","c":"etaken","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":0.5,"ch":false},{"s":2,"nm":"Air Dominance","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.2,"ch":false},{"s":3,"nm":"Blastmaster","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":0.25,"ch":false}],"sw":{"nm":"Wings of Hope","l":111,"h":111,"b":{"side":"rally","c":"leth"}}},{"n":"Wu Ming","g":6,"r":"L","t":"inf","ea":540.43,"ed":540.43,"x":{"a":4546,"d":5926,"h":88910},"sk":[{"s":1,"nm":"Shadow's Evasion","c":"red","to":"inf","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Crescent Uplift","c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":3,"nm":"Elemental Resonance","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Dragonslayer","l":133.5,"h":133.5,"b":{"side":"def","c":"def"}}},{"n":"Renee","g":6,"r":"L","t":"lan","ea":540.43,"ed":540.43,"x":{"a":5926,"d":5926,"h":59274},"sk":[{"s":1,"nm":"Nightmare Trace","c":"dmg","to":"lan","v":[20.0,40.0,60.0,80.0,100.0],"u":0.5,"ch":false},{"s":2,"nm":"Dreamcatcher","c":"dmg","to":"lan","v":[30.0,60.0,90.0,120.0,150.0],"u":0.5,"ch":false},{"s":3,"nm":"Dreamslice","c":"dmg","to":"all","v":[15.0,30.0,45.0,60.0,75.0],"u":0.5,"ch":false}],"sw":{"nm":"Illusion Magiball","l":133.5,"h":133.5,"b":{"side":"rally","c":"leth"}}},{"n":"Wayne","g":6,"r":"L","t":"mar","ea":540.43,"ed":540.43,"x":{"a":7200,"d":5926,"h":44454},"sk":[{"s":1,"nm":"Thunder Strike","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.25,"ch":false},{"s":2,"nm":"Roundabout Hit","c":"dmg","to":"mar","v":[4.0,8.0,12.0,16.0,20.0],"u":0.5,"ch":false},{"s":3,"nm":"Fleet","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Power Boomerang","l":133.5,"h":133.5,"b":{"side":"def","c":"leth"}}},{"n":"Edith","g":7,"r":"L","t":"inf","ea":650.52,"ed":650.52,"x":{"a":5466,"d":7126,"h":106892},"sk":[{"s":1,"nm":"Strategic Balance","c":"red","to":"mar","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false,"ex":[{"c":"dmg","to":"lan","v":[4.0,8.0,12.0,16.0,20.0]}]},{"s":2,"nm":"Ironclad","c":"red","to":"inf","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":3,"nm":"Steel Sentinel","c":"hp","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Charm Toolkit","l":160.5,"h":160.5,"b":{"side":"def","c":"hp"}}},{"n":"Gordon","g":7,"r":"L","t":"lan","ea":650.52,"ed":650.52,"x":{"a":7126,"d":7126,"h":71262},"sk":[{"s":1,"nm":"Venom Infusion","c":"dmg","to":"lan","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":false,"ex":[{"c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0]}]},{"s":2,"nm":"Chemical Terror","c":"dmg","to":"lan","v":[30.0,60.0,90.0,120.0,150.0],"u":0.333,"ch":false,"ex":[{"c":"dmg","to":"all","v":[6.0,12.0,18.0,24.0,30.0]}]},{"s":3,"nm":"Toxic Release","c":"etaken","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":0.5,"ch":false,"ex":[{"c":"dmg","to":"all","v":[6.0,12.0,15.0,24.0,30.0]}]}],"sw":{"nm":"Bonecrux Venom","l":160.5,"h":160.5,"b":{"side":"rally","c":"leth"}}},{"n":"Bradley","g":7,"r":"L","t":"mar","ea":650.52,"ed":650.52,"x":{"a":8656,"d":7126,"h":53446},"sk":[{"s":1,"nm":"Veteran's Might","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Power Shot","c":"dmg","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":1.0,"ch":false},{"s":3,"nm":"Tactical Assistance","c":"dmg","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":0.5,"ch":false}],"sw":{"nm":"Thunder Cannon","l":160.5,"h":160.5,"b":{"side":"def","c":"atk"}}},{"n":"Gatot","g":8,"r":"L","t":"inf","ea":780.62,"ed":780.62,"x":{"a":6573,"d":8568,"h":128538},"sk":[{"s":1,"nm":"Golden Guard","c":"def","to":"inf","v":[6.0,12.0,18.0,24.0,30.0],"u":1.0,"ch":false},{"s":2,"nm":"King's Bestowal","c":"red","to":"inf","v":[1.98,3.96,5.94,7.92,9.9],"u":1.0,"ch":false},{"s":3,"nm":"Royal Legion","c":"eatk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Golden Fang","l":193.0,"h":193.0,"b":{"side":"def","c":"def"}}},{"n":"Sonya","g":8,"r":"L","t":"lan","ea":780.62,"ed":780.62,"x":{"a":8568,"d":8568,"h":85692},"sk":[{"s":1,"nm":"Treasure Hunter","c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Bounty Temptation","c":"dmg","to":"lan","v":[7.5,15.0,22.5,30.0,37.5],"u":0.5,"ch":false},{"s":3,"nm":"Torrential Impact","c":"red","to":"lan","v":[4.0,8.0,12.0,16.0,20.0],"u":0.2,"ch":false}],"sw":{"nm":"Mangrove Frog","l":193.0,"h":193.0,"b":{"side":"def","c":"leth"}}},{"n":"Hendrik","g":8,"r":"L","t":"mar","ea":780.62,"ed":780.62,"x":{"a":10410,"d":8568,"h":64268},"sk":[{"s":1,"nm":"Worm's Ravage","c":"edef","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Armor of Barnacles","c":"def","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":0.5,"ch":false},{"s":3,"nm":"Dragon's Heir","c":"dmg","to":"mar","v":[4.0,8.0,12.0,16.0,20.0],"u":0.333,"ch":false}],"sw":{"nm":"Abyss Driver","l":193.0,"h":193.0,"b":{"side":"rally","c":"atk"}}},{"n":"Magnus","g":9,"r":"L","t":"inf","ea":940.75,"ed":940.75,"x":{"a":7901,"d":10300,"h":154511},"sk":[{"s":1,"nm":"Rapacious","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Iron Phalanx","c":"def","to":"inf","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":3,"nm":"Iceman","c":"red","to":"inf","v":[2.0,4.0,6.0,8.0,10.0],"u":1.0,"ch":false,"ex":[{"c":"dmg","to":"mar","v":[2.0,4.0,6.0,8.0,10.0]}]}],"sw":{"nm":"Storm Axe","l":232,"h":232,"b":{"side":"def","c":"hp"}}},{"n":"Fred","g":9,"r":"L","t":"lan","ea":940.75,"ed":940.75,"x":{"a":10300,"d":10300,"h":103008},"sk":[{"s":1,"nm":"Hydraulic Suppression","c":"eleth","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Acidification","c":"etaken","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":3,"nm":"Floodbringer","c":"dmg","to":"lan","v":[20.0,40.0,60.0,80.0,100.0],"u":0.25,"ch":false,"ex":[{"c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0]}]}],"sw":{"nm":"Blazebearer","l":232,"h":232,"b":{"side":"rally","c":"atk"}}},{"n":"Xura","g":9,"r":"L","t":"mar","ea":940.75,"ed":940.75,"x":{"a":12513,"d":10300,"h":77256},"sk":[{"s":1,"nm":"Fungal Fog","c":"red","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Piercing Arrow","c":"dmg","to":"mar","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":false},{"s":3,"nm":"Unorthodoxy","c":"dmg","to":"mar","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false}],"sw":{"nm":"Witch Mask","l":232,"h":232,"b":{"side":"def","c":"atk"}}},{"n":"Gregory","g":10,"r":"L","t":"inf","ea":1110.88,"ed":1110.88,"x":{"a":9484,"d":12364,"h":185480},"sk":[{"s":1,"nm":"Legion of the Sun","c":"atk","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false},{"s":2,"nm":"Charged Assault","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":true},{"s":3,"nm":"Unbroken","c":"red","to":"inf","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false}],"sw":{"nm":"Solarsword","l":277.5,"h":277.5,"b":{"side":"def","c":"leth"}}},{"n":"Freya","g":10,"r":"L","t":"lan","ea":1110.88,"ed":1110.88,"x":{"a":12364,"d":12364,"h":123654},"sk":[{"s":1,"nm":"Fog of War","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Blood Moon Scythe","c":"dmg","to":"lan","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true},{"s":3,"nm":"Night's Vengeance","c":"red","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false,"ex":[{"c":"dmg","to":"all","v":[3.0,6.0,9.0,12.0,15.0]}]}],"sw":{"nm":"Blood Moon Scythe","l":277.5,"h":277.5,"b":{"side":"def","c":"def"}}},{"n":"Blanchette","g":10,"r":"L","t":"mar","ea":1110.88,"ed":1110.88,"x":{"a":15021,"d":12364,"h":92740},"sk":[{"s":1,"nm":"Armed to the Teeth","c":"leth","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Blood Hunter","c":"dmg","to":"mar","v":[7.5,15.0,22.5,30.0,37.5],"u":0.333,"ch":false},{"s":3,"nm":"Crimson Sniper","c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":0.5,"ch":false}],"sw":{"nm":"Wolf Hunter","l":277.5,"h":277.5,"b":{"side":"rally","c":"leth"}}},{"n":"Eleonora","g":11,"r":"L","t":"inf","ea":1281.02,"ed":1281.02,"x":{"a":11392,"d":14850,"h":222776},"sk":[{"s":1,"nm":"Scorching Sun","c":"hp","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Solaris Nexus","c":"red","to":"inf","v":[2.0,4.0,6.0,8.0,10.0],"u":1.0,"ch":false,"ex":[{"c":"dmg","to":"mar","v":[2.0,4.0,6.0,8.0,10.0]}]},{"s":3,"nm":"Soaring Flame","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":0.4,"ch":false}],"sw":{"nm":"Scepter of Solaris","l":320,"h":320,"b":{"side":"def","c":"hp"}}},{"n":"Lloyd","g":11,"r":"L","t":"lan","ea":1281.02,"ed":1281.02,"x":{"a":14850,"d":14850,"h":148518},"sk":[{"s":1,"nm":"Bird Invasion","c":"eleth","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Iceflare Bomb","c":"atk","to":"lan","v":[30.0,60.0,90.0,120.0,150.0],"u":0.333,"ch":false},{"s":3,"nm":"Ingenious Mastery","c":"leth","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true}],"sw":{"nm":"Mastercraft Treasure","l":320,"h":320,"b":{"side":"def","c":"atk"}}},{"n":"Rufus","g":11,"r":"L","t":"mar","ea":1281.02,"ed":1281.02,"x":{"a":18042,"d":14850,"h":111388},"sk":[{"s":1,"nm":"Inferno Regiment","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Armor Crush","c":"dmg","to":"mar","v":[6.0,12.0,18.0,24.0,30.0],"u":1.0,"ch":false},{"s":3,"nm":"Wrathful Quake","c":"eleth","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.2,"ch":true}],"sw":{"nm":"Meteor Blaster","l":320,"h":320,"b":{"side":"rally","c":"atk"}}},{"n":"Hervor","g":12,"r":"L","t":"inf","ea":1451.16,"ed":1451.16,"x":{"a":13674,"d":17826,"h":267398},"sk":[{"s":1,"nm":"Call For Blood","c":"leth","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Undying","c":"red","to":"inf","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":3,"nm":"Battlethirsty","c":"red","to":"inf","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false,"ex":[{"c":"dmg","to":"all","v":[2.0,4.0,6.0,8.0,10.0]}]}],"sw":{"nm":"Hammer of Sathla","l":362.5,"h":362.5,"b":{"side":"def","c":"def"}}},{"n":"Karol","g":12,"r":"L","t":"lan","ea":1451.16,"ed":1451.16,"x":{"a":17826,"d":17826,"h":178266},"sk":[{"s":1,"nm":"In the Wings","c":"red","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Shieldbreaker","c":"dmg","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":1.0,"ch":false},{"s":3,"nm":"Standard of Ages","c":"atk","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false}],"sw":{"nm":"Spirit of Winterwind","l":362.5,"h":362.5,"b":{"side":"rally","c":"atk"}}},{"n":"Ligeia","g":12,"r":"L","t":"mar","ea":1451.16,"ed":1451.16,"x":{"a":21656,"d":17826,"h":133698},"sk":[{"s":1,"nm":"Nerf Poison","c":"edef","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Corrosion","c":"dmg","to":"mar","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":false},{"s":3,"nm":"Toxic Tip","c":"dmg","to":"mar","v":[20.0,40.0,60.0,80.0,100.0],"u":0.5,"ch":false,"ex":[{"c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0]}]}],"sw":{"nm":"Fateweaver","l":362.5,"h":362.5,"b":{"side":"def","c":"leth"}}},{"n":"Gisela","g":13,"r":"L","t":"inf","ea":1621.29,"ed":1621.29,"x":{"a":16416,"d":21400,"h":321012},"sk":[{"s":1,"nm":"Alloyed Defense","c":"def","to":"inf","v":[6.0,12.0,18.0,24.0,30.0],"u":1.0,"ch":false},{"s":2,"nm":"Scavengeworks","c":"def","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":3,"nm":"Trial Shield","c":"red","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true}],"sw":{"nm":"Helacore","l":405.0,"h":405.0,"b":{"side":"def","c":"atk"}}},{"n":"Flora","g":13,"r":"L","t":"lan","ea":1621.29,"ed":1621.29,"x":{"a":21400,"d":21400,"h":214008},"sk":[{"s":1,"nm":"Enmiring Vines","c":"etaken","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true},{"s":2,"nm":"Plantage","c":"red","to":"inf","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":3,"nm":"Confusion Pollen","c":"etaken","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":0.25,"ch":false}],"sw":{"nm":"Kernel of Plenty","l":405.0,"h":405.0,"b":{"side":"def","c":"hp"}}},{"n":"Vulcanus","g":13,"r":"L","t":"mar","ea":1621.29,"ed":1621.29,"x":{"a":25998,"d":21400,"h":160506},"sk":[{"s":1,"nm":"Raging Storm","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Breaker Steel","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.2,"ch":false},{"s":3,"nm":"True Strike","c":"edef","to":"all","v":[12.0,24.0,36.0,48.0,60.0],"u":0.5,"ch":false}],"sw":{"nm":"Doom Sigil","l":405.0,"h":405.0,"b":{"side":"rally","c":"atk"}}},{"n":"Elif","g":14,"r":"L","t":"inf","ea":1791.43,"ed":1791.43,"x":{"a":19702,"d":25684,"h":385280},"sk":[{"s":1,"nm":"Shackling Veil","c":"eatk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Slash Formation","c":"atk","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false},{"s":3,"nm":"Enchanting Tapestry","c":"red","to":"inf","v":[6.0,12.0,18.0,24.0,30.0],"u":1.0,"ch":false}],"sw":{"nm":"Moonscar","l":447.5,"h":447.5,"b":{"side":"def","c":"def"}}},{"n":"Dominic","g":14,"r":"L","t":"lan","ea":1791.43,"ed":1791.43,"x":{"a":25684,"d":25684,"h":256854},"sk":[{"s":1,"nm":"Mystic Mechanism","c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Spiky Assault","c":"dmg","to":"lan","v":[12.0,24.0,36.0,48.0,60.0],"u":1.0,"ch":false},{"s":3,"nm":"Mirror Maze","c":"red","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false}],"sw":{"nm":"Exobox","l":447.5,"h":447.5,"b":{"side":"rally","c":"leth"}}},{"n":"Cara","g":14,"r":"L","t":"mar","ea":1791.43,"ed":1791.43,"x":{"a":31203,"d":25684,"h":192640},"sk":[{"s":1,"nm":"Smoky Encounter","c":"eleth","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Mech Pet","c":"dmg","to":"all","v":[10.0,15.0,20.0,25.0,30.0],"u":1.0,"ch":false},{"s":3,"nm":"Witch's Wrath","c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":0.5,"ch":false}],"sw":{"nm":"Velocomet","l":447.5,"h":447.5,"b":{"side":"def","c":"leth"}}},{"n":"Hank","g":15,"r":"L","t":"inf","ea":1961.56,"ed":1961.56,"x":{"a":23637,"d":30812,"h":462204},"sk":[{"s":1,"nm":"Roaring Rage","c":"leth","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Flying Sparks","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":0.2,"ch":false},{"s":3,"nm":"Raging Force","c":"etaken","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":0.25,"ch":false}],"sw":{"nm":"Roaring Rage (gear)","l":490.0,"h":490.0,"b":{"side":"def","c":"hp"}}},{"n":"Estrella","g":15,"r":"L","t":"lan","ea":1961.56,"ed":1961.56,"x":{"a":30812,"d":30812,"h":308136},"sk":[{"s":1,"nm":"Corrosive Color","c":"edef","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Dawn Canvas","c":"atk","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false},{"s":3,"nm":"Splendid Scene","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Dreamscape Painting","l":490.0,"h":490.0,"b":{"side":"def","c":"atk"}}},{"n":"Viveca","g":15,"r":"L","t":"mar","ea":1961.56,"ed":1961.56,"x":{"a":37433,"d":30812,"h":231102},"sk":[{"s":1,"nm":"Nightfall Legion","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Shadow World","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.2,"ch":true},{"s":3,"nm":"Children of the Mist","c":"dmg","to":"all","v":[2.0,4.0,6.0,8.0,10.0],"u":1.0,"ch":false}],"sw":{"nm":"Dark Star","l":490.0,"h":490.0,"b":{"side":"rally","c":"leth"}}},{"n":"Seigel","g":16,"r":"L","t":"inf","ea":2131.7,"ed":2131.7,"x":{"a":28371,"d":36984,"h":554778},"sk":[{"s":1,"nm":"Armor of Night","c":"hp","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Night's Defense","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":3,"nm":"Vanguard of Eternity","c":"red","to":"inf","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":{"nm":"Blacklight Halberd","l":532.5,"h":532.5,"b":{"side":"def","c":"leth"}}},{"n":"Ursar","g":16,"r":"L","t":"lan","ea":2131.7,"ed":2131.7,"x":{"a":36984,"d":36984,"h":369852},"sk":[{"s":1,"nm":"Forest Spores","c":"eatk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Horn of the Ancients","c":"leth","to":"all","v":[6.0,12.0,18.0,24.0,30.0],"u":0.5,"ch":false},{"s":3,"nm":"Poison Tips","c":"dmg","to":"lan","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":false}],"sw":{"nm":"Progenitor Spear","l":532.5,"h":532.5,"b":{"side":"rally","c":"atk"}}},{"n":"Aisling","g":16,"r":"L","t":"mar","ea":2131.7,"ed":2131.7,"x":{"a":44931,"d":36984,"h":277388},"sk":[{"s":1,"nm":"Songs of the Ancestors","c":"dmg","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Rock Strom","c":"dmg","to":"mar","v":[15.0,30.0,45.0,60.0,75.0],"u":0.333,"ch":false},{"s":3,"nm":"Forest Fury","c":"dmg","to":"mar","v":[4.0,8.0,12.0,16.0,20.0],"u":0.333,"ch":false}],"sw":{"nm":"Cord of Destiny","l":532.5,"h":532.5,"b":{"side":"def","c":"def"}}},{"n":"Aiden","g":17,"r":"L","t":"inf","ea":2301.84,"ed":2301.84,"x":{"a":34042,"d":44376,"h":665666},"sk":[{"s":1,"nm":"Starfire Wall","c":"def","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.4,"ch":true},{"s":2,"nm":"Scarlet Brigade","c":"atk","to":"all","v":[3.0,6.0,9.0,12.0,15.0],"u":1.0,"ch":false},{"s":3,"nm":"Rush","c":"atk","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":false}],"sw":{"nm":"Burning Fist","l":575.0,"h":575.0,"b":{"side":"def","c":"atk"}}},{"n":"Bertha","g":17,"r":"L","t":"lan","ea":2301.84,"ed":2301.84,"x":{"a":44376,"d":44376,"h":443778},"sk":[{"s":1,"nm":"Dissection","c":"leth","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Vengeance","c":"dmg","to":"lan","v":[12.5,25.0,37.5,50.0,62.5],"u":0.5,"ch":false},{"s":3,"nm":"Lethal Precision","c":"dmg","to":"lan","v":[12.0,24.0,36.0,48.0,60.0],"u":1.0,"ch":false}],"sw":{"nm":"Adjudicator","l":575.0,"h":575.0,"b":{"side":"def","c":"leth"}}},{"n":"Eleanor","g":17,"r":"L","t":"mar","ea":2301.84,"ed":2301.84,"x":{"a":53912,"d":44376,"h":332832},"sk":[{"s":1,"nm":"Theoretical Advantage","c":"edef","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Pierce Caliber","c":"dmg","to":"mar","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true},{"s":3,"nm":"Trajectoids","c":"dmg","to":"mar","v":[6.0,12.0,18.0,24.0,30.0],"u":0.5,"ch":false}],"sw":{"nm":"The Warden","l":575.0,"h":575.0,"b":{"side":"rally","c":"leth"}}},{"n":"Jessie","g":0,"r":"E","t":"lan","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Stand of Arms","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Bulwarks","c":"red","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false}],"sw":null},{"n":"Jasser","g":0,"r":"E","t":"mar","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Tactical Genius","c":"dmg","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":null},{"n":"Seo-yoon","g":0,"r":"E","t":"mar","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Rallying Beat","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":null},{"n":"Patrick","g":0,"r":"E","t":"lan","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Super Nutrients","c":"hp","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false},{"s":2,"nm":"Caloric Booster","c":"atk","to":"all","v":[5.0,10.0,15.0,20.0,25.0],"u":1.0,"ch":false}],"sw":null},{"n":"Sergey","g":0,"r":"E","t":"inf","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Defenders' Edge","c":"red","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Weaken","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false}],"sw":null},{"n":"Bahiti","g":0,"r":"E","t":"mar","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Sixth Sense","c":"red","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false},{"s":2,"nm":"Fluorescence","c":"dmg","to":"all","v":[10.0,20.0,30.0,40.0,50.0],"u":0.5,"ch":true}],"sw":null},{"n":"Gina","g":0,"r":"E","t":"mar","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[],"sw":null},{"n":"Lumak Bokan","g":0,"r":"E","t":"lan","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Tactical Deception","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false}],"sw":null},{"n":"Ling Xue","g":0,"r":"E","t":"lan","ea":180,"ed":180,"x":{"a":null,"d":null,"h":null},"sk":[{"s":1,"nm":"Fearsome Aura","c":"eatk","to":"all","v":[4.0,8.0,12.0,16.0,20.0],"u":1.0,"ch":false}],"sw":null},{"n":"Smith","g":0,"r":"R","t":"inf","ea":100,"ed":100,"x":{"a":null,"d":null,"h":null},"sk":[],"sw":null},{"n":"Eugene","g":0,"r":"R","t":"inf","ea":100,"ed":100,"x":{"a":null,"d":null,"h":null},"sk":[],"sw":null},{"n":"Charlie","g":0,"r":"R","t":"lan","ea":100,"ed":100,"x":{"a":null,"d":null,"h":null},"sk":[],"sw":null},{"n":"Cloris","g":0,"r":"R","t":"mar","ea":100,"ed":100,"x":{"a":null,"d":null,"h":null},"sk":[],"sw":null}],"troops":{"inf":{"T1":[1,4,1,6],"T2":[2,5,2,7],"T3":[3,6,3,8],"T4":[4,7,4,9],"T5":[5,8,5,10],"T6":[6,9,6,11],"T7":[7,10,7,12],"T8":[8,11,8,13],"T9":[9,12,9,14],"T10":[10,13,10,15],"T11":[12,15,12,17],"T10 FC1":[11,14,10,16],"T10 FC2":[12,16,11,17],"T10 FC3":[13,17,12,18],"T10 FC4":[13,18,13,19],"T10 FC5":[14,20,13,20],"T10 FC6":[14,21,13,21],"T10 FC7":[15,22,14,22],"T10 FC8":[15,23,15,23],"T10 FC9":[16,25,15,24],"T10 FC10":[18,26,16,25],"T11 FC1":[13,16,12,18],"T11 FC2":[14,17,13,19],"T11 FC3":[15,18,14,20],"T11 FC4":[15,19,15,21],"T11 FC5":[16,22,15,22],"T11 FC6":[17,23,16,23],"T11 FC7":[17,24,16,24],"T11 FC8":[18,25,17,25],"T11 FC9":[18,27,17,26],"T11 FC10":[19,28,18,27],"T12 FC10":[22,31,21,30]},"lan":{"T1":[4,2,5,2],"T2":[5,3,6,3],"T3":[6,4,7,4],"T4":[7,5,8,5],"T5":[8,6,9,6],"T6":[9,7,10,7],"T7":[10,8,11,8],"T8":[11,9,12,9],"T9":[12,10,13,10],"T10":[13,11,14,11],"T11":[15,13,16,13],"T10 FC1":[14,12,15,11],"T10 FC2":[16,13,16,12],"T10 FC3":[17,14,17,13],"T10 FC4":[18,14,18,13],"T10 FC5":[20,15,19,14],"T10 FC6":[21,15,20,14],"T10 FC7":[22,16,21,15],"T10 FC8":[23,17,22,15],"T10 FC9":[25,17,23,16],"T10 FC10":[26,19,24,17],"T11 FC1":[16,14,17,13],"T11 FC2":[18,15,18,14],"T11 FC3":[19,16,19,15],"T11 FC4":[20,16,20,15],"T11 FC5":[22,17,21,16],"T11 FC6":[23,17,22,16],"T11 FC7":[24,18,23,17],"T11 FC8":[25,19,24,17],"T11 FC9":[27,19,25,18],"T11 FC10":[28,21,26,20],"T12 FC10":[31,24,29,23]},"mar":{"T1":[5,1,5,1],"T2":[6,2,7,2],"T3":[7,3,8,3],"T4":[8,4,9,4],"T5":[9,5,10,5],"T6":[10,6,11,6],"T7":[11,7,12,7],"T8":[12,8,13,8],"T9":[13,9,14,9],"T10":[14,10,15,10],"T11":[16,12,17,12],"T10 FC1":[15,11,16,11],"T10 FC2":[17,12,17,12],"T10 FC3":[18,13,18,13],"T10 FC4":[19,14,19,13],"T10 FC5":[21,14,20,14],"T10 FC6":[22,15,21,14],"T10 FC7":[23,15,22,15],"T10 FC8":[24,16,23,15],"T10 FC9":[26,17,24,16],"T10 FC10":[27,19,25,17],"T11 FC1":[17,13,18,13],"T11 FC2":[19,14,19,14],"T11 FC3":[20,15,20,15],"T11 FC4":[21,16,21,15],"T11 FC5":[23,16,22,16],"T11 FC6":[24,17,23,16],"T11 FC7":[25,18,24,17],"T11 FC8":[26,19,25,18],"T11 FC9":[28,19,26,18],"T11 FC10":[30,21,27,20],"T12 FC10":[33,24,30,23]}},"version":"2026-10-26"};</script>
+<script>
+/* WOS-TOP BIACHES — formation engine.
+ * Community battle model (not the official formula, which is not public):
+ *   kills/round = K * n * (ATK * LETH) / (DEF * HP) * counter * damageMods
+ * Skill effects: same category adds, different categories multiply.
+ * Chance / periodic skills are applied as expected value (value * uptime).
+ * Everything here is pure JS so it runs in the browser and in node tests.
+ */
+(function (root) {
+  'use strict';
+
+  const TYPES = ['inf', 'lan', 'mar'];
+  const BEATS = { inf: 'lan', lan: 'mar', mar: 'inf' };
+  const K = 0.03;
+  let HERO_W = 1;
+  const PIECES = ['goggles', 'gloves', 'belt', 'boots'];
+
+  let DB = null;
+  let BY_NAME = {};
+
+  function setDB(db) {
+    DB = db;
+    BY_NAME = {};
+    db.heroes.forEach((h) => { BY_NAME[h.n] = h; });
+  }
+  function hero(name) { return BY_NAME[name]; }
+
+  /* ---------- account helpers ---------- */
+
+  function defaultBonus(gen) { return 150 + 60 * (gen || 1); }
+  function defaultRally(gen) { return 150000 + 60000 * (gen || 1); }
+  function defaultMarch(gen) { return 40000 + 12000 * (gen || 1); }
+
+  function num(v, d) {
+    const x = parseFloat(v);
+    return Number.isFinite(x) ? x : d;
+  }
+
+  function starFactor(st, sp) {
+    const s = Math.min(5, (st || 0) + (sp || 0) / 6);
+    return 0.4 + 0.6 * (s / 5);
+  }
+
+  // Skill level a hero can have: rule "skill level <= stars + 1"; user agreed 4★+ counts as max.
+  function skillLevel(st) { return st >= 4 ? 5 : Math.max(1, Math.min(5, (st || 0) + 1)); }
+  // Expedition skill slot k (1..3) unlocks at (k-1) stars; talents (slot 4) always on.
+  function slotUnlocked(slot, st) { return slot >= 4 || (st || 0) >= slot - 1; }
+
+  function swSkillValue(lv) { return lv >= 2 ? 2.5 * Math.floor(lv / 2) + 2.5 : 0; }
+
+  function gearPiece(piece, p) {
+    if (!p) return { leth: 0, hp: 0, atk: 0, def: 0 };
+    const plus = num(p.p, 0);
+    const lv = num(p.lv, 0);
+    const q = p.q || 'L';
+    let base = 0;
+    if (q === 'L') base = 50 + 0.5 * plus;
+    else if (q === 'M') base = 25 + 0.25 * plus;
+    else if (q === 'E') base = 12.5 + 0.125 * plus;
+    else base = 6 + 0.06 * plus;
+    const mult = (q === 'L' || q === 'M') ? 1 + 0.1 * lv : 1;
+    const v = base * mult;
+    const out = { leth: 0, hp: 0, atk: 0, def: 0 };
+    if (piece === 'goggles' || piece === 'boots') out.leth = v; else out.hp = v;
+    if (q === 'L') {
+      const atkFirst = piece === 'goggles' || piece === 'belt';
+      const a = atkFirst ? 'atk' : 'def';
+      const b = atkFirst ? 'def' : 'atk';
+      if (plus >= 20) out[a] += 20;
+      if (plus >= 60) out[b] += 30;
+      if (plus >= 100) out[a] += 50;
+    }
+    return out;
+  }
+
+  function gearSet(set) {
+    const t = { leth: 0, hp: 0, atk: 0, def: 0 };
+    if (!set) return t;
+    PIECES.forEach((pc, i) => {
+      const g = gearPiece(pc, set[i]);
+      t.leth += g.leth; t.hp += g.hp; t.atk += g.atk; t.def += g.def;
+    });
+    return t;
+  }
+
+  function troopBase(type, tier) {
+    const rows = DB.troops[type];
+    return rows[tier] || rows.T10 || Object.values(rows)[0];
+  }
+
+  /* ---------- effects ---------- */
+
+  // A "unit" is a hero used in a formation: {h: dbHero, st, sp, sw, gear}
+  function leaderEffects(units) {
+    const eff = [];
+    units.forEach((u) => {
+      if (!u || !u.h) return;
+      const lvl = skillLevel(u.st);
+      u.h.sk.forEach((s) => {
+        if (!slotUnlocked(s.s, u.st)) return;
+        eff.push({ c: s.c, to: s.to, v: s.v[lvl - 1] * s.u, nm: s.nm, ch: s.ch || s.u < 1 });
+        (s.ex || []).forEach((e) => eff.push({ c: e.c, to: e.to, v: e.v[lvl - 1] * s.u, nm: s.nm + '+', ch: false }));
+      });
+    });
+    return eff;
+  }
+
+  function joinerEffects(names) {
+    const eff = [];
+    const seenChance = {};
+    names.forEach((n) => {
+      const h = hero(n);
+      if (!h || !h.sk.length) return;
+      const s = h.sk[0];
+      const isChance = s.ch || s.u < 1;
+      const isDebuff = ['eatk', 'edef', 'eleth', 'etaken'].indexOf(s.c) >= 0;
+      if (isChance || isDebuff) {
+        // chance skills roll once and the same debuff on the enemy doesn't stack: one copy per rally
+        if (seenChance[s.nm]) return;
+        seenChance[s.nm] = true;
+      }
+      eff.push({ c: s.c, to: s.to, v: s.v[4] * s.u, nm: s.nm, ch: isChance });
+    });
+    return eff;
+  }
+
+  /* ---------- side construction ---------- */
+
+  /* opts: {
+   *   account: {troops:{inf:{tier}}, bonus:{inf:{atk,def,leth,hp}}, gen},
+   *   units: {inf: unit|null, lan: unit|null, mar: unit|null},
+   *   joiners: [names], ratio: {inf,lan,mar} (percent), total: number, side: 'rally'|'def'|'solo'
+   * } */
+  function buildSide(o) {
+    const acc = o.account;
+    const gen = acc.gen || 1;
+    const s = {};
+    const n = {};
+    const eff = leaderEffects(TYPES.map((t) => o.units[t])).concat(joinerEffects(o.joiners || []));
+    const sum = (c, t) => eff.filter((e) => e.c === c && (e.to === 'all' || e.to === t)).reduce((a, e) => a + e.v, 0);
+    const sumAll = (c) => eff.filter((e) => e.c === c).reduce((a, e) => a + e.v, 0);
+
+    // SW rally / defender skills apply to every troop type of the matching side
+    const swSide = { atk: 0, def: 0, leth: 0, hp: 0 };
+    TYPES.forEach((t) => {
+      const u = o.units[t];
+      if (!u || !u.h || !u.h.sw || !u.h.sw.b) return;
+      const b = u.h.sw.b;
+      if ((b.side === 'rally' && o.side === 'rally') || (b.side === 'def' && o.side === 'def')) {
+        if (swSide[b.c] !== undefined) swSide[b.c] += swSkillValue(num(u.sw, 0));
+      }
+    });
+
+    TYPES.forEach((t) => {
+      const tr = (acc.troops && acc.troops[t]) || {};
+      const base = troopBase(t, tr.tier || 'T10');
+      const bon = (acc.bonus && acc.bonus[t]) || {};
+      const pct = {
+        atk: num(bon.atk, defaultBonus(gen)), def: num(bon.def, defaultBonus(gen)),
+        leth: num(bon.leth, defaultBonus(gen)), hp: num(bon.hp, defaultBonus(gen)),
+      };
+      const u = o.units[t];
+      const heroMul = { atk: 1, def: 1 };
+      if (u && u.h) {
+        const sf = starFactor(u.st, u.sp);
+        heroMul.atk = 1 + HERO_W * (u.h.ea || 0) * sf / 100;
+        heroMul.def = 1 + HERO_W * (u.h.ed || 0) * sf / 100;
+        if (u.h.sw) {
+          const lv = Math.min(10, num(u.sw, 0));
+          pct.leth += (u.h.sw.l || 0) * lv / 10;
+          pct.hp += (u.h.sw.h || 0) * lv / 10;
+        }
+        const g = gearSet(u.gear);
+        pct.atk += g.atk; pct.def += g.def; pct.leth += g.leth; pct.hp += g.hp;
+      }
+      Object.keys(swSide).forEach((k) => { pct[k] += swSide[k]; });
+
+      const tierNum = parseInt(String(tr.tier || 'T10').slice(1), 10) || 10;
+      const fc = /FC(\d+)/.exec(String(tr.tier || '')) ? parseInt(/FC(\d+)/.exec(tr.tier)[1], 10) : 0;
+      let troopDmg = 1;
+      let troopRed = 0;
+      if (t === 'mar' && tierNum >= 7) troopDmg *= 1.1;
+      if (t === 'mar' && fc >= 5) troopDmg *= 1.15; else if (t === 'mar' && fc >= 3) troopDmg *= 1.1;
+      if (t === 'lan' && fc >= 5) troopDmg *= 1.15; else if (t === 'lan' && fc >= 3) troopDmg *= 1.1;
+      if (t === 'inf' && fc >= 5) troopRed += 0.07; else if (t === 'inf' && fc >= 3) troopRed += 0.05;
+      if (t === 'lan' && fc >= 8) troopRed += 0.07;
+
+      // hero skill stat buffs join the same additive % pool as account bonuses (wiki: same-type bonuses add)
+      ['atk', 'def', 'leth', 'hp'].forEach((k) => { pct[k] += sum(k, t); });
+      s[t] = {
+        // hero expedition stats boost the hero's own troop type as a separate multiplier
+        base: { atk: base[0] * heroMul.atk, def: base[1] * heroMul.def, leth: base[2], hp: base[3] },
+        pct,
+        dmg: (1 + sum('dmg', t) / 100) * troopDmg,
+        red: Math.max(0.5, 1 - sum('red', t) / 100 - troopRed), // damage reduction capped at 50%
+        ambush: t === 'lan' && tierNum >= 7,
+      };
+      n[t] = Math.max(0, (o.total || 0) * (num(o.ratio[t], 0) / 100));
+    });
+    return {
+      s, n,
+      // enemy debuffs are percentage points subtracted from the enemy's own bonus of the same type
+      debuff: { eatk: sumAll('eatk'), edef: sumAll('edef'), eleth: sumAll('eleth'), etaken: sumAll('etaken') / 100 },
+    };
+  }
+
+  /* ---------- battle ---------- */
+
+  function stat(x, k, minus) {
+    return x.base[k] * Math.max(0.1, 1 + (x.pct[k] - (minus || 0)) / 100);
+  }
+
+  function battle(A, B, maxRounds) {
+    maxRounds = maxRounds || 120;
+    const na = Object.assign({}, A.n);
+    const nb = Object.assign({}, B.n);
+    const NA = TYPES.reduce((x, t) => x + na[t], 0);
+    const NB = TYPES.reduce((x, t) => x + nb[t], 0);
+    const mods = (X, Y) => {
+      const m = {};
+      TYPES.forEach((g) => {
+        m[g] = {};
+        TYPES.forEach((t) => {
+          const atk = stat(X.s[g], 'atk', Y.debuff.eatk);
+          const leth = stat(X.s[g], 'leth', Y.debuff.eleth);
+          const def = stat(Y.s[t], 'def', X.debuff.edef);
+          const hp = stat(Y.s[t], 'hp', 0);
+          const counter = BEATS[g] === t ? 1.1 : 1;
+          m[g][t] = K * (atk * leth) / (def * hp) * counter * X.s[g].dmg * Y.s[t].red * (1 + X.debuff.etaken);
+        });
+      });
+      return m;
+    };
+    const mAB = mods(A, B);
+    const mBA = mods(B, A);
+    const hit = (Xs, xn, yn, m) => {
+      const loss = { inf: 0, lan: 0, mar: 0 };
+      TYPES.forEach((g) => {
+        if (xn[g] <= 0) return;
+        const alive = TYPES.filter((t) => yn[t] > 0);
+        if (!alive.length) return;
+        const target = alive[0];
+        // community model: kills scale with sqrt(troops) of each group (diminishing returns)
+        const tot = TYPES.reduce((x, t) => x + xn[t], 0);
+        const eff = Math.sqrt(xn[g] * tot);
+        if (Xs.s[g].ambush && target === 'inf' && yn.mar > 0) {
+          loss.inf += eff * m[g].inf * 0.8;
+          loss.mar += eff * m[g].mar * 0.2;
+        } else {
+          loss[target] += eff * m[g][target];
+        }
+      });
+      return loss;
+    };
+    let rounds = 0;
+    for (; rounds < maxRounds; rounds++) {
+      const sa = TYPES.reduce((x, t) => x + na[t], 0);
+      const sb = TYPES.reduce((x, t) => x + nb[t], 0);
+      if (sa <= 0.5 || sb <= 0.5) break;
+      const lb = hit(A, na, nb, mAB);
+      const la = hit(B, nb, na, mBA);
+      TYPES.forEach((t) => { na[t] = Math.max(0, na[t] - la[t]); nb[t] = Math.max(0, nb[t] - lb[t]); });
+    }
+    const ra = TYPES.reduce((x, t) => x + na[t], 0);
+    const rb = TYPES.reduce((x, t) => x + nb[t], 0);
+    const fa = NA ? ra / NA : 0;
+    const fb = NB ? rb / NB : 0;
+    return { win: fa > fb, remA: fa, remB: fb, score: fa - fb, rounds, leftA: na, leftB: nb };
+  }
+
+  // Power index: damage efficiency at the first round vs a reference enemy (does not saturate like win/loss).
+  function powerIndex(A, B) {
+    const rate = (X, Y) => {
+      let r = 0;
+      TYPES.forEach((g) => {
+        if (X.n[g] <= 0) return;
+        const t = TYPES.find((x) => Y.n[x] > 0) || 'inf';
+        const atk = stat(X.s[g], 'atk', Y.debuff.eatk);
+        const leth = stat(X.s[g], 'leth', Y.debuff.eleth);
+        const def = stat(Y.s[t], 'def', X.debuff.edef);
+        const tot = TYPES.reduce((x, k) => x + X.n[k], 0);
+        r += Math.sqrt(X.n[g] * tot) * K * atk * leth / (def * stat(Y.s[t], 'hp', 0)) * (BEATS[g] === t ? 1.1 : 1) * X.s[g].dmg * Y.s[t].red * (1 + X.debuff.etaken);
+      });
+      return r;
+    };
+    const off = rate(A, B);
+    const taken = rate(B, A);
+    return Math.sqrt(off / Math.max(1e-9, taken));
+  }
+
+  // Bear: PvE target that doesn't fight back; damage over a fixed number of rounds.
+  function bearDamage(A) {
+    let d = 0;
+    TYPES.forEach((g) => {
+      const x = A.s[g];
+      // the Bear has a small fixed defense pool, so defense debuffs matter more here than in PvP
+      d += A.n[g] * stat(x, 'atk', 0) * stat(x, 'leth', 0) * x.dmg * (1 + A.debuff.etaken) / Math.max(0.2, 1 - A.debuff.edef / 300);
+    });
+    return d;
+  }
+
+  /* ---------- ratio grids ---------- */
+
+  function ratioGrid(minInf, minLan, minMar, step) {
+    step = step || 5;
+    const out = [];
+    for (let i = minInf; i <= 100; i += step) {
+      for (let l = minLan; l <= 100 - i; l += step) {
+        const m = 100 - i - l;
+        if (m >= minMar) out.push({ inf: i, lan: l, mar: m });
+      }
+    }
+    return out;
+  }
+  function ratioText(r) { return `${r.inf}/${r.lan}/${r.mar}`; }
+
+  /* ---------- unit / roster helpers ---------- */
+
+  function rosterUnits(account, type) {
+    const out = [];
+    Object.keys(account.heroes || {}).forEach((name) => {
+      const h = hero(name);
+      if (!h || h.t !== type) return;
+      const o = account.heroes[name];
+      out.push({ h, st: num(o.st, 0), sp: num(o.sp, 0), sw: num(o.sw, 0) });
+    });
+    return out;
+  }
+
+  function withGear(unit, account, type, setKey) {
+    if (!unit) return null;
+    const g = account.gear && account.gear[type];
+    return Object.assign({}, unit, { gear: g ? g[setKey] : null });
+  }
+
+  function combos(account, limitPerType) {
+    const lists = TYPES.map((t) => {
+      const l = rosterUnits(account, t).filter((u) => u.h.sk.length);
+      l.sort((a, b) => unitStrength(b) - unitStrength(a));
+      return l.length ? l.slice(0, limitPerType || 6) : [null];
+    });
+    const out = [];
+    lists[0].forEach((a) => lists[1].forEach((b) => lists[2].forEach((c) => out.push({ inf: a, lan: b, mar: c }))));
+    return out;
+  }
+
+  function unitStrength(u) {
+    if (!u || !u.h) return 0;
+    const sf = starFactor(u.st, u.sp);
+    const lvl = skillLevel(u.st);
+    const skills = u.h.sk.filter((s) => slotUnlocked(s.s, u.st)).reduce((a, s) => a + s.v[lvl - 1] * s.u, 0);
+    return (u.h.ea || 0) * sf + (u.h.sw ? (u.h.sw.l + u.h.sw.h) * Math.min(10, u.sw) / 20 : 0) + skills * 8;
+  }
+
+  function gearUnits(combo, account) {
+    const u = {};
+    TYPES.forEach((t) => { u[t] = withGear(combo[t], account, t, 'A'); });
+    return u;
+  }
+
+  /* ---------- typical opponent ---------- */
+
+  function metaRoster(gen) {
+    const heroes = {};
+    DB.heroes.forEach((h) => {
+      if (h.r === 'L' && h.g <= gen && h.sk.length) heroes[h.n] = { st: 5, sp: 0, sw: 10 };
+      if (h.r === 'E' && h.sk.length) heroes[h.n] = { st: 5, sp: 0, sw: 0 };
+    });
+    return heroes;
+  }
+  function maxGear() {
+    const set = PIECES.map(() => ({ q: 'L', p: 100, lv: 20 }));
+    return { inf: { A: set, B: set }, lan: { A: set, B: set }, mar: { A: set, B: set } };
+  }
+
+  function genericEnemyUnits(gen) {
+    const u = {};
+    TYPES.forEach((t) => {
+      const best = DB.heroes.filter((h) => h.r === 'L' && h.t === t && h.g <= gen).sort((a, b) => b.g - a.g)[0];
+      u[t] = best ? { h: best, st: 4, sp: 0, sw: 5, gear: null } : null;
+    });
+    return u;
+  }
+
+  function enemySide(account, enemy, side, total, fallbackRatio) {
+    const gen = account.gen || 1;
+    let units = genericEnemyUnits(gen);
+    let ratio = fallbackRatio;
+    if (enemy && enemy.heroes && enemy.heroes.some((x) => x && x.n)) {
+      units = { inf: null, lan: null, mar: null };
+      enemy.heroes.forEach((x) => {
+        const h = x && hero(x.n);
+        if (h) units[h.t] = { h, st: num(x.st, 4), sp: 0, sw: num(x.sw, num(x.st, 4) >= 4 ? 5 : 0), gear: null };
+      });
+    }
+    if (enemy && enemy.ratio && (num(enemy.ratio.inf, 0) + num(enemy.ratio.lan, 0) + num(enemy.ratio.mar, 0)) > 0) {
+      const r = enemy.ratio;
+      const tot = num(r.inf, 0) + num(r.lan, 0) + num(r.mar, 0);
+      ratio = { inf: num(r.inf, 0) * 100 / tot, lan: num(r.lan, 0) * 100 / tot, mar: num(r.mar, 0) * 100 / tot };
+    }
+    const enemyAcc = { gen, troops: account.troops, bonus: (enemy && enemy.bonus) || account.bonus };
+    return buildSide({ account: enemyAcc, units, joiners: (enemy && enemy.joiners) || [], ratio, total: num(enemy && enemy.total, total), side });
+  }
+
+  /* ---------- optimizers ---------- */
+
+  const OFFENSE = ['dmg', 'atk', 'leth', 'edef', 'etaken'];
+  const DEFENSE = ['red', 'hp', 'def', 'eatk', 'eleth'];
+
+  function joinerPool(gen, kind) {
+    const cats = kind === 'def' ? DEFENSE : OFFENSE;
+    return DB.heroes.filter((h) => h.sk.length && (h.r !== 'L' || h.g <= gen) && cats.indexOf(h.sk[0].c) >= 0)
+      .map((h) => h.n);
+  }
+
+  function pickJoiners(evalFn, pool, count) {
+    const chosen = [];
+    for (let i = 0; i < count; i++) {
+      let best = null;
+      let bestScore = -Infinity;
+      pool.forEach((n) => {
+        if (chosen.filter((x) => x === n).length >= 2) return; // at most 2 copies of the same joiner
+        const sc = evalFn(chosen.concat([n]));
+        if (sc > bestScore + 1e-9) { bestScore = sc; best = n; }
+      });
+      if (!best) break;
+      chosen.push(best);
+    }
+    const base = evalFn(chosen);
+    const alts = pool.filter((n) => chosen.indexOf(n) < 0)
+      .map((n) => ({ n, sc: evalFn(chosen.slice(0, count - 1).concat([n])) }))
+      .sort((a, b) => b.sc - a.sc).slice(0, 2).map((x) => x.n);
+    return { chosen, alts, score: base };
+  }
+
+  function capacity(account, kind) {
+    if (kind === 'rally') return num(account.rally, 0) || defaultRally(account.gen);
+    return num(account.march, 0) || defaultMarch(account.gen);
+  }
+
+  /* mode: 'attack' | 'defense'; kind: 'rally' | 'solo' */
+  function optimizeBattle(account, opts) {
+    const gen = account.gen || 1;
+    const mode = opts.mode || 'attack';
+    const kind = opts.kind || 'rally';
+    const side = kind === 'solo' ? 'solo' : (mode === 'attack' ? 'rally' : 'def');
+    const total = capacity(account, kind);
+    const enemyRatio = mode === 'attack' ? { inf: 60, lan: 20, mar: 20 } : { inf: 50, lan: 20, mar: 30 };
+    const enemy = enemySide(account, opts.enemy, mode === 'attack' ? 'def' : 'rally', total, enemyRatio);
+    const run = (units, ratio, joiners) => {
+      const me = buildSide({ account, units, joiners, ratio, total, side });
+      return mode === 'attack' ? battle(me, enemy) : invert(battle(enemy, me));
+    };
+    const baseRatio = mode === 'attack' ? { inf: 50, lan: 20, mar: 30 } : { inf: 60, lan: 20, mar: 20 };
+    const cs = combos(account, 6).map((c) => ({ c, units: gearUnits(c, account) }));
+    if (!cs.length) return null;
+    cs.forEach((x) => { x.score = run(x.units, baseRatio, []).score; });
+    cs.sort((a, b) => b.score - a.score);
+    // community floors the model can't see (turrets/front line): garrisons >= 50% infantry, attacks >= 25%
+    const grid = ratioGrid(mode === 'defense' ? 50 : 25, 0, 0, 5);
+    let best = null;
+    cs.slice(0, 3).forEach((x) => {
+      grid.forEach((r) => {
+        const res = run(x.units, r, []);
+        if (!best || res.score > best.res.score) best = { x, r, res };
+      });
+    });
+    // second best ratio for the same heroes, at least 10 points away
+    const others = grid.filter((r) => Math.abs(r.inf - best.r.inf) + Math.abs(r.mar - best.r.mar) >= 10)
+      .map((r) => ({ r, res: run(best.x.units, r, []) })).sort((a, b) => b.res.score - a.res.score);
+    const second = others[0];
+    let joiners = null;
+    if (kind === 'rally') {
+      const pool = joinerPool(gen, mode === 'attack' ? 'att' : 'def');
+      joiners = pickJoiners((list) => run(best.x.units, best.r, list).score, pool, 4);
+    }
+    const final = run(best.x.units, best.r, joiners ? joiners.chosen : []);
+    const meFinal = buildSide({ account, units: best.x.units, joiners: joiners ? joiners.chosen : [], ratio: best.r, total, side });
+    return {
+      units: best.x.units, ratio: best.r, ratio2: second ? second.r : null,
+      joiners, result: final, power: powerIndex(meFinal, enemy), enemyGiven: !!(opts.enemy && opts.enemy.heroes && opts.enemy.heroes.some((h) => h && h.n)),
+    };
+  }
+
+  function invert(r) {
+    return { win: !r.win, remA: r.remB, remB: r.remA, score: -r.score, rounds: r.rounds };
+  }
+
+  function optimizeBear(account) {
+    const gen = account.gen || 1;
+    const total = capacity(account, 'rally');
+    const cs = combos(account, 6).map((c) => ({ c, units: gearUnits(c, account) }));
+    if (!cs.length) return null;
+    const dmg = (units, r, j) => bearDamage(buildSide({ account, units, joiners: j, ratio: r, total, side: 'rally' }));
+    const base = { inf: 10, lan: 10, mar: 80 };
+    cs.forEach((x) => { x.score = dmg(x.units, base, []); });
+    cs.sort((a, b) => b.score - a.score);
+    // community test: some infantry/lancers beat 0/0/100 -> keep a 5% floor on each
+    const grid = ratioGrid(5, 5, 0, 5);
+    let best = null;
+    cs.slice(0, 3).forEach((x) => grid.forEach((r) => {
+      const d = dmg(x.units, r, []);
+      if (!best || d > best.d) best = { x, r, d };
+    }));
+    const pool = joinerPool(gen, 'att');
+    const joiners = pickJoiners((list) => dmg(best.x.units, best.r, list), pool, 4);
+    const ranked = pool.map((n) => ({ n, d: dmg(best.x.units, best.r, [n]) })).sort((a, b) => b.d - a.d);
+    const top = ranked.slice(0, 8).map((x, i) => ({ n: x.n, tier: i < 4 ? 'Top' : 'Good' }));
+    const own = Object.keys(account.heroes || {}).filter((n) => pool.indexOf(n) >= 0)
+      .sort((a, b) => dmg(best.x.units, best.r, [b]) - dmg(best.x.units, best.r, [a]))[0] || null;
+    const alt = ratioGrid(5, 5, 0, 5).filter((r) => r.mar !== best.r.mar)
+      .map((r) => ({ r, d: dmg(best.x.units, r, []) })).sort((a, b) => b.d - a.d)[0];
+    return { units: best.x.units, ratio: best.r, ratio2: alt ? alt.r : null, joiners, top, ownJoin: own, damage: best.d };
+  }
+
+  function firstSkillValue(name, kind) {
+    const h = hero(name);
+    if (!h || !h.sk.length) return 0;
+    const s = h.sk[0];
+    const w = kind === 'def' ? { red: 1, hp: 0.7, def: 0.5, eatk: 0.4, eleth: 0.4 }
+      : { dmg: 1, etaken: 0.9, leth: 0.7, atk: 0.6, edef: 0.3 };
+    return (w[s.c] || 0) * s.v[4] * s.u;
+  }
+
+  function optimizeJoe(account, joeMode) {
+    const owned = Object.keys(account.heroes || {});
+    const defRank = owned.map((n) => ({ n, v: firstSkillValue(n, 'def') })).filter((x) => x.v > 0)
+      .sort((a, b) => b.v - a.v);
+    const offRank = owned.map((n) => ({ n, v: firstSkillValue(n, 'att') })).filter((x) => x.v > 0)
+      .sort((a, b) => b.v - a.v);
+    const reinforce = defRank.slice(0, 6).map((x) => x.n);
+    const reinforceAlt = defRank.slice(6, 8).map((x) => x.n);
+    const full = joeMode === 'full';
+    const lead = optimizeBattle(account, { mode: full ? 'attack' : 'defense', kind: 'rally' });
+    return {
+      reinforce, reinforceAlt, cityRatio: { inf: 90, lan: 10, mar: 0 },
+      hq: {
+        units: lead ? lead.units : null,
+        w10: full ? { inf: 0, lan: 0, mar: 100 } : { inf: 30, lan: 70, mar: 0 },
+        w20: full ? { inf: 0, lan: 0, mar: 100 } : { inf: 60, lan: 40, mar: 0 },
+        joinHero: full ? (offRank[0] ? offRank[0].n : 'Jessie') : (defRank[0] ? defRank[0].n : 'Sergey'),
+        joinAlt: (full ? offRank : defRank).slice(1, 4).map((x) => x.n),
+        joinRatio: full ? { inf: 0, lan: 0, mar: 100 } : { inf: 60, lan: 40, mar: 0 },
+      },
+      full,
+    };
+  }
+
+  function optimizeCanyon(account) {
+    const squads = [[], [], []];
+    TYPES.forEach((t) => {
+      const l = rosterUnits(account, t).sort((a, b) => unitStrength(b) - unitStrength(a));
+      for (let i = 0; i < 3; i++) {
+        const u = l[i] || null;
+        squads[i].push(u ? Object.assign({}, u, { set: i === 0 ? 'A' : (i === 1 ? 'B' : null) }) : null);
+      }
+    });
+    return squads;
+  }
+
+  function arenaScore(u) {
+    const h = u.h;
+    const sf = starFactor(u.st, u.sp);
+    const swf = 1 + Math.min(10, u.sw) / 20;
+    const a = (h.x && h.x.a) || (h.ea || 100) * 4;
+    const d = (h.x && h.x.d) || (h.ed || 100) * 4;
+    const hp = (h.x && h.x.h) || (h.ea || 100) * 60;
+    return { tank: (hp + d * 15) * sf * swf, dmg: a * sf * swf };
+  }
+
+  function tankW(u) { return u.h.t === 'inf' ? 1.5 : (u.h.t === 'mar' ? 0.6 : 1); }
+
+  function optimizeArena(account) {
+    const all = [];
+    TYPES.forEach((t) => rosterUnits(account, t).forEach((u) => all.push(Object.assign(u, { sc: arenaScore(u) }))));
+    if (!all.length) return null;
+    const front = all.slice().sort((a, b) => (b.sc.tank * tankW(b)) - (a.sc.tank * tankW(a))).slice(0, 2);
+    const rest = all.filter((u) => front.indexOf(u) < 0).sort((a, b) => b.sc.dmg - a.sc.dmg);
+    const back = rest.slice(0, 3);
+    const bench = rest.slice(3, 5);
+    const lineup = front.concat(back);
+    const gearUsed = {};
+    lineup.slice().sort((a, b) => (b.sc.tank + b.sc.dmg * 10) - (a.sc.tank + a.sc.dmg * 10)).forEach((u) => {
+      const t = u.h.t;
+      gearUsed[t] = gearUsed[t] || 0;
+      u.set = gearUsed[t] === 0 ? 'A' : (gearUsed[t] === 1 ? 'B' : null);
+      gearUsed[t] += 1;
+    });
+    return { front, back, bench };
+  }
+
+  /* ---------- scoring per activity (used by upgrade advisor) ---------- */
+
+  function activityScores(account, roles) {
+    const out = {};
+    if (roles.indexOf('rallyAtk') >= 0 || roles.indexOf('solo') >= 0) {
+      const r = optimizeBattle(account, { mode: 'attack', kind: roles.indexOf('rallyAtk') >= 0 ? 'rally' : 'solo' });
+      out.attack = r ? r.power : 0;
+    }
+    if (roles.indexOf('garrison') >= 0 || roles.indexOf('joe') >= 0) {
+      const r = optimizeBattle(account, { mode: 'defense', kind: 'rally' });
+      out.defense = r ? r.power : 0;
+    }
+    if (roles.indexOf('bear') >= 0) {
+      const r = optimizeBear(account);
+      out.bear = r ? r.damage : 0;
+    }
+    if (roles.indexOf('arena') >= 0 || roles.indexOf('canyon') >= 0) {
+      let s = 0;
+      TYPES.forEach((t) => rosterUnits(account, t).sort((a, b) => unitStrength(b) - unitStrength(a)).slice(0, 2)
+        .forEach((u) => { s += unitStrength(u); }));
+      out.heroes = s;
+    }
+    return out;
+  }
+
+  function relGain(before, after) {
+    let total = 0;
+    let n = 0;
+    Object.keys(before).forEach((k) => {
+      const b = before[k];
+      const a = after[k];
+      total += b > 0 ? ((a - b) / b) * 100 : 0;
+      n++;
+    });
+    return n ? total / n : 0;
+  }
+
+  function cloneAccount(a) { return JSON.parse(JSON.stringify(a)); }
+
+  function lvl(st, sp) { return st >= 5 ? '5★' : (sp ? `${st}/${sp}` : (st ? `${st}★` : '0/0')); }
+
+  function upgradeAdvice(account, roles) {
+    roles = roles && roles.length ? roles : ['rallyAtk', 'bear'];
+    const base = activityScores(account, roles);
+    const items = [];
+    const usedInBest = usedHeroes(account, roles);
+    Object.keys(account.heroes || {}).forEach((name) => {
+      const h = hero(name);
+      if (!h || !h.sk.length) return;
+      const cur = account.heroes[name];
+      const st = num(cur.st, 0);
+      const sp = num(cur.sp, 0);
+      const sw = num(cur.sw, 0);
+      const steps = [];
+      if (st < 4) steps.push({ kind: 'stars', to: { st: 4, sp: 0 }, label: `${name} to 4★` });
+      else if (st < 5) steps.push({ kind: 'stars', to: { st: 5, sp: 0 }, label: `${name} to 5★` });
+      if (h.sw && h.r === 'L' && sw < 10) {
+        const to = Math.min(10, sw + 2 - (sw % 2));
+        steps.push({ kind: 'sw', to: { sw: to }, label: `${name} special weapon to Lv ${to}` });
+      }
+      steps.forEach((s) => {
+        const acc = cloneAccount(account);
+        Object.assign(acc.heroes[name], s.to);
+        const g = relGain(base, activityScores(acc, roles));
+        items.push({ hero: name, label: s.label, gain: g, kind: s.kind, inUse: usedInBest.indexOf(name) >= 0,
+          now: `${lvl(st, sp)} · SW ${sw}` });
+      });
+    });
+    // heroes the player doesn't own: worth unlocking? find the lowest level where they help
+    const gen = account.gen || 1;
+    const tiers = [{ st: 3, sp: 0, sw: 0 }, { st: 4, sp: 0, sw: 5 }, { st: 5, sp: 0, sw: 10 }];
+    DB.heroes.filter((h) => h.r === 'L' && h.g <= gen && h.sk.length && !(account.heroes || {})[h.n]).forEach((h) => {
+      const top = cloneAccount(account);
+      top.heroes[h.n] = tiers[2];
+      if (relGain(base, activityScores(top, roles)) <= 1) return;
+      for (let i = 0; i < tiers.length; i++) {
+        const acc = cloneAccount(account);
+        acc.heroes[h.n] = tiers[i];
+        const g = relGain(base, activityScores(acc, roles));
+        if (g > 1) {
+          const t = tiers[i];
+          items.push({ hero: h.n, label: `Unlock ${h.n} → ${lvl(t.st, t.sp)}${t.sw ? ' + SW ' + t.sw : ''}`, gain: g, kind: 'unlock',
+            inUse: false, now: 'Not owned' });
+          break;
+        }
+      }
+    });
+    items.sort((a, b) => b.gain - a.gain);
+    const invest = items.filter((x) => x.gain > 0.5).slice(0, 6);
+    const avoid = Object.keys(account.heroes || {}).filter((n) => {
+      const h = hero(n);
+      return h && h.r === 'L' && usedInBest.indexOf(n) < 0 && !items.some((x) => x.hero === n && x.gain > 0.5);
+    }).slice(0, 4);
+    return { invest, avoid, used: usedInBest };
+  }
+
+  function usedHeroes(account, roles) {
+    const used = {};
+    const add = (u) => { if (u && u.h) used[u.h.n] = 1; };
+    if (roles.indexOf('rallyAtk') >= 0 || roles.indexOf('solo') >= 0) {
+      const r = optimizeBattle(account, { mode: 'attack', kind: 'rally' });
+      if (r) TYPES.forEach((t) => add(r.units[t]));
+    }
+    if (roles.indexOf('garrison') >= 0 || roles.indexOf('joe') >= 0) {
+      const r = optimizeBattle(account, { mode: 'defense', kind: 'rally' });
+      if (r) TYPES.forEach((t) => add(r.units[t]));
+    }
+    if (roles.indexOf('bear') >= 0) {
+      const r = optimizeBear(account);
+      if (r) TYPES.forEach((t) => add(r.units[t]));
+    }
+    if (roles.indexOf('canyon') >= 0) optimizeCanyon(account).forEach((sq) => sq.forEach(add));
+    if (roles.indexOf('arena') >= 0) {
+      const a = optimizeArena(account);
+      if (a) a.front.concat(a.back).forEach(add);
+    }
+    return Object.keys(used);
+  }
+
+  function nextGenAdvice(account, roles, spend) {
+    const gen = account.gen || 1;
+    const next = DB.heroes.filter((h) => h.r === 'L' && h.g === gen + 1);
+    if (!next.length) return { gen: gen + 1, picks: [] };
+    roles = roles && roles.length ? roles : ['rallyAtk', 'bear'];
+    const base = activityScores(account, roles);
+    const tiers = [{ st: 3, sp: 0, sw: 0 }, { st: 4, sp: 0, sw: 5 }, { st: 5, sp: 0, sw: 10 }];
+    const picks = next.map((h) => {
+      let target = null;
+      let gainAtTarget = 0;
+      let gainMax = 0;
+      tiers.forEach((t, i) => {
+        const acc = cloneAccount(account);
+        acc.heroes[h.n] = t;
+        const g = relGain(base, activityScores(acc, roles));
+        if (i === tiers.length - 1) gainMax = g;
+        if (!target && g > 1) { target = t; gainAtTarget = g; }
+      });
+      return { name: h.n, type: h.t, target, gain: gainAtTarget, gainMax };
+    }).sort((a, b) => b.gainMax - a.gainMax);
+    const budget = { f2p: 1, low: 1, mid: 2, whale: 3 }[spend || 'low'] || 1;
+    picks.forEach((p, i) => {
+      p.verdict = p.target && i < budget ? 'Invest' : (p.target ? 'Only if spare' : 'Skip');
+    });
+    return { gen: gen + 1, picks };
+  }
+
+  function metaAccount(account) {
+    const a = cloneAccount(account);
+    a.heroes = metaRoster(account.gen || 1);
+    a.gear = maxGear();
+    return a;
+  }
+
+  // Prediction for a report: user formation vs the enemy described in the report.
+  function predict(account, report) {
+    const units = {};
+    TYPES.forEach((t) => { units[t] = null; });
+    (report.myHeroes || []).forEach((x) => {
+      const h = hero(x.n);
+      if (!h) return;
+      const own = (account.heroes || {})[x.n] || {};
+      units[h.t] = withGear({ h, st: num(own.st, 4), sp: num(own.sp, 0), sw: num(own.sw, 0) }, account, h.t, 'A');
+    });
+    const myTotal = TYPES.reduce((a, t) => a + num(report.myTroops && report.myTroops[t], 0), 0);
+    const enTotal = TYPES.reduce((a, t) => a + num(report.enemyTroops && report.enemyTroops[t], 0), 0);
+    if (!myTotal || !enTotal) return null;
+    const ratio = {};
+    const eratio = {};
+    TYPES.forEach((t) => {
+      ratio[t] = num(report.myTroops[t], 0) * 100 / myTotal;
+      eratio[t] = num(report.enemyTroops[t], 0) * 100 / enTotal;
+    });
+    const attacking = report.role !== 'defender';
+    const side = report.type === 'solo' ? 'solo' : (attacking ? 'rally' : 'def');
+    const me = buildSide({ account, units, joiners: [], ratio, total: myTotal, side });
+    const en = enemySide(account, { heroes: report.enemyHeroes, ratio: eratio, total: enTotal, bonus: report.enemyBonus },
+      attacking ? 'def' : 'rally', enTotal, eratio);
+    const r = battle(me, en);
+    return { win: r.win, myLeft: Math.round(r.remA * 100), enemyLeft: Math.round(r.remB * 100) };
+  }
+
+  root.WOS = {
+    TYPES, PIECES, setDB, hero, buildSide, battle, bearDamage, optimizeBattle, optimizeBear, optimizeJoe,
+    optimizeCanyon, optimizeArena, upgradeAdvice, nextGenAdvice, metaAccount, predict, ratioText, gearSet,
+    gearPiece, skillLevel, starFactor, unitStrength, activityScores, joinerPool, powerIndex,
+    get db() { return DB; },
+    setHeroW(w) { HERO_W = w; },
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* WOS-TOP BIACHES — app UI (EN). Vanilla JS, no build step needed at runtime. */
+(function () {
+  'use strict';
+
+  const CONFIG = { BACKEND_URL: 'https://script.google.com/macros/s/AKfycbx5ldeDHo3BHtTv7ZdCtem5PRNSCaNGuQZfDxO4bBXkLKsAsRkzRESI3Q1iZ5v9LFkU/exec' };
+  const DEMO = !CONFIG.BACKEND_URL || CONFIG.BACKEND_URL.indexOf('__') === 0;
+  const TYPES = WOS.TYPES;
+  const TYPE_NAME = { inf: 'Infantry', lan: 'Lancers', mar: 'Marksmen' };
+  const PIECE_NAME = { goggles: 'Goggles', gloves: 'Gloves', belt: 'Belt', boots: 'Boots' };
+  const CAT = {
+    dmg: 'Damage dealt +', atk: 'Attack +', leth: 'Lethality +', hp: 'Health +', def: 'Defense +',
+    red: 'Damage taken −', eatk: 'Enemy attack −', edef: 'Enemy defense −', eleth: 'Enemy lethality −', etaken: 'Enemy dmg taken +',
+  };
+  const ROLES = [
+    ['rallyAtk', 'I open attack rallies'], ['bear', 'I open Bear rallies'], ['garrison', 'I lead garrisons'],
+    ['joiner', 'Joiner only'], ['arena', 'Arena'], ['canyon', 'Canyon Clash'], ['joe', 'Crazy Joe'], ['solo', 'Solo marches'],
+  ];
+  const SPEND = [['f2p', 'F2P'], ['low', 'Low'], ['mid', 'Mid'], ['whale', 'Whale']];
+
+  const ICON = {
+    inf: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/></svg>',
+    lan: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19L19 5"/><path d="M13 5h6v6"/><path d="M7 13l4 4"/></svg>',
+    mar: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
+    account: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+    form: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/></svg>',
+    up: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>',
+    gen: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>',
+    report: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>',
+  };
+
+  /* ---------- state ---------- */
+
+  const blankEnemy = () => ({ heroes: [{ n: '', st: 4 }, { n: '', st: 4 }, { n: '', st: 4 }], ratio: { inf: '', lan: '', mar: '' } });
+  const blankSet = () => [0, 1, 2, 3].map(() => ({ q: 'L', p: '', lv: '' }));
+  const blankReport = () => ({
+    type: 'rally', role: 'attacker', myHeroes: [{ n: '' }, { n: '' }, { n: '' }], myTroops: { inf: '', lan: '', mar: '' },
+    enemyHeroes: [{ n: '', st: 4 }, { n: '', st: 4 }, { n: '', st: 4 }], enemyTroops: { inf: '', lan: '', mar: '' },
+    enemyTier: 'T10', enemyBonus: { inf: {}, lan: {}, mar: {} }, result: '', myLoss: { inf: '', lan: '', mar: '' },
+    enemyLoss: { inf: '', lan: '', mar: '' }, joiners: '', joeLevel: '', bearDamage: '', notes: '',
+  });
+  function newProfile() {
+    return {
+      gen: 1, genManual: '', nextGenDays: '', spend: 'low', roles: [],
+      troops: { inf: { tier: 'T10', count: '' }, lan: { tier: 'T10', count: '' }, mar: { tier: 'T10', count: '' } },
+      march: '', rally: '',
+      bonus: { inf: { atk: '', def: '', leth: '', hp: '' }, lan: { atk: '', def: '', leth: '', hp: '' }, mar: { atk: '', def: '', leth: '', hp: '' } },
+      heroes: {}, gear: { inf: { A: blankSet(), B: blankSet() }, lan: { A: blankSet(), B: blankSet() }, mar: { A: blankSet(), B: blankSet() } },
+    };
+  }
+  function mergeProfile(p) {
+    const base = newProfile();
+    if (!p || typeof p !== 'object') return base;
+    const out = Object.assign(base, p);
+    TYPES.forEach((t) => {
+      out.troops[t] = Object.assign({ tier: 'T10', count: '' }, (p.troops || {})[t]);
+      out.bonus[t] = Object.assign({ atk: '', def: '', leth: '', hp: '' }, (p.bonus || {})[t]);
+      const g = (p.gear || {})[t] || {};
+      out.gear[t] = { A: (g.A && g.A.length === 4) ? g.A : blankSet(), B: (g.B && g.B.length === 4) ? g.B : blankSet() };
+    });
+    out.heroes = p.heroes || {};
+    out.roles = Array.isArray(p.roles) ? p.roles : [];
+    return out;
+  }
+
+  const S = {
+    session: null, profile: null, view: 'account', sub: 'profile', ftab: 'rally', fmode: 'mine',
+    rallyMode: 'attack', soloMode: 'attack', joeMode: 'standard', enemy: { rally: blankEnemy(), solo: blankEnemy() },
+    heroFilter: 'all', heroSearch: '', cache: {}, report: blankReport(), lastPrediction: null, saveTimer: null, saveState: '',
+  };
+
+  /* ---------- utils ---------- */
+
+  const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const num = (v, d) => { const x = parseFloat(v); return Number.isFinite(x) ? x : d; };
+  const $ = (sel) => document.querySelector(sel);
+  function getPath(obj, path) { return path.split('.').reduce((o, k) => (o == null ? o : o[k]), obj); }
+  function setPath(obj, path, val) {
+    const keys = path.split('.');
+    let o = obj;
+    keys.slice(0, -1).forEach((k) => { if (o[k] == null) o[k] = {}; o = o[k]; });
+    o[keys[keys.length - 1]] = val;
+  }
+  function toast(msg) {
+    const d = document.createElement('div');
+    d.className = 'toast'; d.textContent = msg;
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 2200);
+  }
+
+  /* ---------- backend ---------- */
+
+  async function api(action, payload) {
+    if (DEMO) return demoApi(action, payload);
+    const res = await fetch(CONFIG.BACKEND_URL, { method: 'POST', body: JSON.stringify(Object.assign({ action }, payload)) });
+    return res.json();
+  }
+  function demoApi(action, p) {
+    const key = 'wostop_demo_' + (p.user || '').toLowerCase();
+    try {
+      if (action === 'login') {
+        if (!p.user || !p.code) return { ok: false, error: 'Invalid username or code' };
+        const prof = JSON.parse(localStorage.getItem(key) || 'null');
+        const meta = JSON.parse(localStorage.getItem(key + '_meta') || '{}');
+        return { ok: true, profile: prof, state: meta.state || '', alliance: meta.alliance || '', role: 'user', stateOpen: '' };
+      }
+      if (action === 'save') { localStorage.setItem(key, JSON.stringify(p.profile)); localStorage.setItem(key + '_meta', JSON.stringify({ state: p.state || '', alliance: p.alliance || '' })); return { ok: true }; }
+      if (action === 'report') {
+        const k = key + '_reports';
+        const list = JSON.parse(localStorage.getItem(k) || '[]');
+        list.push(p.report); localStorage.setItem(k, JSON.stringify(list));
+        return { ok: true };
+      }
+    } catch (e) { return { ok: true }; }
+    return { ok: false, error: 'Unknown action' };
+  }
+
+  function storageOk() {
+    try { localStorage.setItem('wostop_probe', '1'); localStorage.removeItem('wostop_probe'); return true; } catch (e) { return false; }
+  }
+
+  function scheduleSave() {
+    S.cache = {};
+    S.saveState = 'Unsaved changes';
+    paintSaveState();
+    clearTimeout(S.saveTimer);
+    S.saveTimer = setTimeout(saveNow, 1500);
+  }
+  async function saveNow() {
+    if (!S.session) return;
+    S.saveState = 'Saving…'; paintSaveState();
+    try {
+      S.profile.gen = currentGen();
+      const r = await api('save', { user: S.session.user, code: S.session.code, profile: S.profile, state: S.session.state, alliance: S.session.alliance });
+      if (r.ok && 'stateOpen' in r) { const before = S.session.stateOpen; S.session.stateOpen = r.stateOpen || ''; if (before !== S.session.stateOpen) { S.cache = {}; render(); } }
+      S.saveState = r.ok ? 'Saved' : ('Not saved: ' + (r.error || 'error'));
+      if (r.ok) S.savedAt = new Date();
+    } catch (e) { S.saveState = 'Not saved: connection error'; }
+    paintSaveState();
+  }
+  function paintSaveState() {
+    const el = $('#save-state');
+    if (el) el.textContent = S.saveState === 'Saved' && S.savedAt ? 'Saved at ' + S.savedAt.toTimeString().slice(0, 5) : S.saveState;
+  }
+
+  /* ---------- engine bridge ---------- */
+
+  function cleanSet(set) {
+    return (set || []).map((x) => (x && (x.p !== '' || x.lv !== '') ? { q: x.q || 'L', p: num(x.p, 0), lv: num(x.lv, 0) } : null));
+  }
+  // A hero counts only if it has an entry and isn't flagged "not owned".
+  function isOwned(v) { return !!v && v.own !== false && v.st !== '' && v.st != null; }
+  function levelValue(v) { return isOwned(v) || (v && v.st !== '' && v.st != null) ? `${num(v.st, 0)}.${num(v.sp, 0)}` : '0.0'; }
+  function levelLabel(st, sp) { return st === 5 ? '5★' : (sp === 0 ? (st === 0 ? '0/0' : st + '★') : `${st}/${sp}`); }
+
+  function account(profile) {
+    const p = profile || S.profile;
+    const heroes = {};
+    Object.keys(p.heroes || {}).forEach((n) => {
+      const v = p.heroes[n];
+      if (isOwned(v) && WOS.hero(n)) heroes[n] = { st: num(v.st, 0), sp: num(v.sp, 0), sw: num(v.sw, 0) };
+    });
+    const gear = {};
+    TYPES.forEach((t) => { gear[t] = { A: cleanSet(p.gear[t].A), B: cleanSet(p.gear[t].B) }; });
+    const own = TYPES.reduce((a, t) => a + num(p.troops[t].count, 0), 0);
+    let march = num(p.march, 0);
+    if (own && march) march = Math.min(march, own);
+    const bonus = {};
+    TYPES.forEach((t) => { bonus[t] = {}; ['atk', 'def', 'leth', 'hp'].forEach((k) => { if (p.bonus[t][k] !== '') bonus[t][k] = num(p.bonus[t][k], undefined); }); });
+    return {
+      gen: currentGen(), heroes, gear, bonus, rally: num(p.rally, 0), march,
+      troops: { inf: { tier: p.troops.inf.tier }, lan: { tier: p.troops.lan.tier }, mar: { tier: p.troops.mar.tier } },
+    };
+  }
+  function cached(key, fn) {
+    if (!(key in S.cache)) S.cache[key] = fn();
+    return S.cache[key];
+  }
+  function activeAccount() { return S.fmode === 'meta' ? WOS.metaAccount(account()) : account(); }
+
+  /* ---------- small renderers ---------- */
+
+  function logoSvg(size) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 200 200" role="img" aria-label="WOS-TOP BIACHES logo"><g stroke="#7DD3FC" stroke-width="4" stroke-linecap="round" opacity="0.75"><path d="M150 40 L182 28"/><path d="M160 60 L194 52"/></g><g transform="rotate(25 120 120)"><rect x="104" y="150" width="12" height="28" rx="6" fill="#1E293B"/><rect x="124" y="150" width="12" height="28" rx="6" fill="#1E293B"/><path d="M100 112 L74 86" stroke="#2563EB" stroke-width="12" stroke-linecap="round"/><path d="M140 112 L166 84" stroke="#2563EB" stroke-width="12" stroke-linecap="round"/><circle cx="72" cy="84" r="8" fill="#F1F5F9"/><circle cx="168" cy="82" r="8" fill="#F1F5F9"/><path d="M96 100 Q90 150 100 158 L140 158 Q150 150 144 100 Q120 88 96 100Z" fill="#3B82F6"/><rect x="95" y="140" width="50" height="8" fill="#1E3A8A"/><circle cx="120" cy="80" r="25" fill="#3B82F6"/><circle cx="120" cy="82" r="18" fill="#F1F5F9"/><circle cx="120" cy="84" r="12" fill="#F2C9A0"/><rect x="106" y="76" width="28" height="9" rx="4.5" fill="#0F172A"/><ellipse cx="120" cy="91" rx="3.5" ry="4" fill="#7F1D1D"/></g><polygon points="106,124 96.5,121.3 101.3,112.7 92.7,117.5 90,108 87.3,117.5 78.7,112.7 83.5,121.3 74,124 83.5,126.7 78.7,135.3 87.3,130.5 90,140 92.7,130.5 101.3,135.3 96.5,126.7" fill="#FCD34D"/><path d="M-20 152 L34 132" stroke="#475569" stroke-width="22" stroke-linecap="round"/><g transform="translate(88 136) rotate(-40)"><path d="M0 0 Q4 -12 -8 -16 L-28 -18 L-30 -34 L-52 -34 L-52 4 Q-30 8 0 0Z" fill="#92400E"/><path d="M-52 4 Q-30 10 2 2 L3 8 Q-30 16 -53 11Z" fill="#1F2937"/><rect x="-56" y="-42" width="30" height="10" rx="5" fill="#F1F5F9"/></g></svg>`;
+  }
+  function ticon(t) { return `<div class="ticon ${t}">${ICON[t] || ''}</div>`; }
+  function ratioBar(label, r, color) {
+    return `<div class="ratio-row"><div style="font-size:12px;font-weight:600;color:${color}">${label}</div>
+      <div class="bar"><i style="width:${r.inf}%;background:var(--inf)"></i><i style="width:${r.lan}%;background:var(--lan)"></i><i style="width:${r.mar}%;background:var(--mar)"></i></div>
+      <div class="num">${WOS.ratioText(r)}</div></div>`;
+  }
+  const legend = `<div class="legend"><div><b style="background:var(--inf)"></b>Infantry</div><div><b style="background:var(--lan)"></b>Lancers</div><div><b style="background:var(--mar)"></b>Marksmen</div></div>`;
+  function unitRow(u, tag, tagColor) {
+    if (!u || !u.h) return `<div class="unit"><div class="ticon"></div><div class="small">No hero of this type in your roster</div><div></div></div>`;
+    const meta = `${u.h.g ? 'G' + u.h.g : (u.h.r === 'E' ? 'Epic' : 'Rare')} · ${levelLabel(u.st, u.sp || 0)}${u.h.sw ? ' · SW ' + u.sw : ''}`;
+    return `<div class="unit">${ticon(u.h.t)}<div style="min-width:0"><div style="font-size:14px;font-weight:600">${esc(u.h.n)}</div><div class="small">${meta}</div></div>${tag ? `<div class="tag" style="color:${tagColor || 'var(--gold)'}">${tag}</div>` : '<div></div>'}</div>`;
+  }
+  function skillText(name) {
+    const h = WOS.hero(name);
+    if (!h || !h.sk.length) return '';
+    const s = h.sk[0];
+    const v = s.v[4];
+    return `${CAT[s.c] || ''}${v}%${s.u < 1 ? ` (${Math.round(s.u * 100)}% chance/uptime)` : ''}`;
+  }
+  function countList(names) {
+    const out = [];
+    names.forEach((n) => {
+      const f = out.find((x) => x.n === n);
+      if (f) f.c++; else out.push({ n, c: 1 });
+    });
+    return out;
+  }
+  function joinerRows(list) {
+    return countList(list).map((x, i) => `<div class="list-row"><div class="rank">${i + 1}</div><div><div class="jname">${esc(x.n)}${x.c > 1 ? ` <span class="small">×${x.c}</span>` : ''}</div><div class="jeff">${esc(skillText(x.n))}</div></div></div>`).join('');
+  }
+  function altPills(list) {
+    if (!list || !list.length) return '';
+    return `<div class="row" style="flex-wrap:wrap"><div class="small">If missing:</div>${list.map((n) => `<span class="pill" style="cursor:default">${esc(n)}</span>`).join('')}</div>`;
+  }
+
+  /* ---------- header / nav ---------- */
+
+  const SECTION = { account: 'Account', form: 'Formations', up: 'Upgrades', gen: 'Next Gen', report: 'Report' };
+  // Gen schedule by state (community transfer table): states are grouped in phases; each phase gets a new Gen
+  // every 84 days. Gen = 13 + floor((col - 5 - phase) / 6), col = 14-day periods since 2025-05-12.
+  const GEN_EPOCH = Date.UTC(2025, 4, 12);
+  const GEN_ROWS = (function () { const a = [4,7,0,14,19,4,21,37,5,44,60,6,62,80,7,88,99,8,101,115,9,120,132,10,140,149,11,150,170,12,171,195,13,196,231,14,232,274,15,275,312,16,313,353,17,354,399,18,400,433,19,434,463,20,464,491,21,492,529,22,530,571,23,572,614,24,615,657,25,658,697,26,698,754,27,755,804,28,805,848,29,849,892,30,893,931,31,932,976,32,977,1021,33,1022,1070,34,1071,1123,35,1124,1182,36,1183,1240,37,1241,1308,38,1309,1366,39,1367,1427,40,1428,1491,41,1492,1552,42,1553,1615,43,1616,1680,44,1681,1751,45,1752,1822,46,1823,1894,47,1895,1976,48,1977,2052,49,2053,2122,50,2123,2184,51,2185,2250,52,2251,2348,53,2349,2431,54,2432,2504,55,2505,2571,56,2572,2630,57,2631,2680,58,2681,2732,59,2733,2783,60,2784,2830,61,2830,2876,62,2877,2933,63,2934,2994,64,2995,3054,65,3055,3113,66,3114,3175,67,3176,3246,68,3247,3315,69,3316,3384,70,3385,3453,71,3454,3509,72,3510,3571,73,3572,3630,74,3631,3691,75,3692,3745,76,3746,3798,77,3799,3855,78,3856,3936,79,3937,4007,80,4008,4067,81,4068,4095,82]; const out = []; for (let i = 0; i < a.length; i += 3) out.push([a[i], a[i + 1], a[i + 2]]); return out; })();
+  const MAX_GEN = 22;
+  // Days since the state opened → Gen (only used when the state isn't in the table and the admin entered an open date).
+  const GEN_DAYS = [0, 40, 120, 195, 270, 360, 440, 520, 600, 680, 760, 840, 920, 1000, 1080, 1160, 1240, 1320, 1400, 1480, 1560, 1640];
+  function statePhase(state) {
+    const s = parseInt(String(state || '').replace(/\D/g, ''), 10);
+    if (!s || s > GEN_ROWS[GEN_ROWS.length - 1][1]) return null;
+    for (let i = 0; i < GEN_ROWS.length; i++) {
+      const [lo, hi, r] = GEN_ROWS[i];
+      if (s >= lo && s <= hi) return { r, exact: true };
+      if (s < lo) {
+        if (i === 0) return { r, exact: false };
+        const [, phi, pr] = GEN_ROWS[i - 1];
+        return { r: Math.round(pr + (r - pr) * (s - phi) / (lo - phi)), exact: false };
+      }
+    }
+    return null;
+  }
+  function autoGen() {
+    if (!S.session) return null;
+    const ph = statePhase(S.session.state);
+    const now = Date.now();
+    if (ph) {
+      const col = Math.floor((now - GEN_EPOCH) / (14 * 86400000));
+      const k = Math.floor((col - 5 - ph.r) / 6);
+      const gen = 13 + k;
+      if (gen < 1) return null;
+      const nextCol = 5 + ph.r + 6 * (k + 1);
+      const nextIn = Math.max(0, Math.ceil((GEN_EPOCH + nextCol * 14 * 86400000 - now) / 86400000));
+      return { gen: Math.min(gen, MAX_GEN), nextIn, src: ph.exact ? 'table' : 'table-near' };
+    }
+    const open = S.session.stateOpen ? new Date(S.session.stateOpen) : null;
+    if (!open || isNaN(open)) return null;
+    const day = Math.floor((now - open.getTime()) / 86400000);
+    if (day < 0) return null;
+    let gen = 1;
+    GEN_DAYS.forEach((d, i) => { if (day >= d) gen = i + 1; });
+    return { gen, nextIn: GEN_DAYS[gen] != null ? GEN_DAYS[gen] - day : null, src: 'open', day };
+  }
+  function manualGen() { const m = S.profile.genManual; return m === '' || m == null ? null : num(m, null); }
+  function currentGen() { const m = manualGen(); if (m) return m; const a = autoGen(); return a ? a.gen : num(S.profile.gen, 1); }
+  function daysToNext() {
+    const a = autoGen(); const m = manualGen();
+    return a && (!m || m === a.gen) ? a.nextIn : NaN;
+  }
+  function tierRank(t) { const m = /T(\d+)(?: FC(\d+))?/.exec(t) || []; return num(m[1], 0) * 100 + num(m[2], 0); }
+  function heroLabel(h) { return `${h.g ? 'G' + h.g : (h.r === 'E' ? 'Epic' : 'Rare')} - ${h.n}`; }
+  function heroOptions(list) { return list.slice().sort((a, b) => (b.g - a.g) || a.n.localeCompare(b.n)).map((h) => [h.n, heroLabel(h)]); }
+
+  function header() {
+    const sub = S.session ? `${esc(S.session.user)}${S.session.state ? ' · State ' + esc(S.session.state) : ''}${S.session.alliance ? ' [' + esc(S.session.alliance) + ']' : ''}` : 'Formation Lab';
+    return `<header class="top"><div class="brand"><div class="logo-sm">${logoSvg(36)}</div><div style="min-width:0"><div class="brand-name">WOS-TOP <span>BIACHES</span></div><div class="brand-sub">${sub}</div></div></div>
+      <div class="row"><span class="chip">EN</span>${S.session ? '<button class="chip chip-btn" data-act="logout">Log out</button>' : ''}</div></header>`;
+  }
+  function bottomNav() {
+    const items = [['account', 'Account', ICON.account], ['form', 'Formations', ICON.form], ['up', 'Upgrades', ICON.up], ['gen', 'Next Gen', ICON.gen], ['report', 'Report', ICON.report]];
+    return `<nav class="bottom" aria-label="Main">${items.map(([k, l, i]) => `<button class="${S.view === k ? 'on' : ''}" data-act="nav" data-v="${k}">${i}${l}</button>`).join('')}</nav>`;
+  }
+
+  /* ---------- login ---------- */
+
+  function viewLogin(err) {
+    return `${header()}<main class="login">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding-top:10px">
+        <div style="width:150px;height:150px;border-radius:50%;background:#0F1A30;border:4px solid var(--ice);box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--ember);overflow:hidden;display:flex;align-items:center;justify-content:center">${logoSvg(140)}</div>
+        <div class="h-font" style="font-size:36px;line-height:1">WOS-TOP</div>
+        <div class="h-font" style="font-size:28px;line-height:1;color:var(--ember);letter-spacing:.24em">BIACHES</div>
+        <div class="small">Formation Lab · unofficial fan tool</div>
+      </div>
+      <form id="login-form" style="display:flex;flex-direction:column;gap:14px">
+        <div class="field"><label for="lu">USERNAME</label><input id="lu" class="in big" autocomplete="username" required></div>
+        <div class="field"><label for="lc">ACCESS CODE</label><input id="lc" class="in big" type="password" autocomplete="current-password" required></div>
+        ${err ? `<div class="err" role="alert">${esc(err)}</div>` : ''}
+        <button class="btn" type="submit" id="login-btn">LOG IN</button>
+        <div class="small" style="text-align:center">Invite only. Lost your code? Ask whoever gave you access.</div>
+        ${DEMO ? `<div class="card blue"><div class="note"><b>Demo mode:</b> not connected to the shared sheet yet. Any username and code work, data stays in this browser.${storageOk() ? '' : ' <b>This browser view blocks storage: your data is kept until you close or reload the page.</b>'}</div></div>` : ''}
+      </form>
+      <div class="small" style="margin-top:auto">No real names, emails or personal data. Only game data is stored.</div>
+    </main>`;
+  }
+
+  /* ---------- account ---------- */
+
+  function viewAccount() {
+    const tabs = [['profile', 'Profile'], ['heroes', 'Heroes'], ['gear', 'Gear']];
+    const body = S.sub === 'heroes' ? accHeroes() : (S.sub === 'gear' ? accGear() : accProfile());
+    const n = Object.keys(account().heroes).length;
+    const start = n === 0 ? `<div class="card warm"><div class="note"><b>Start here:</b> set your current Gen in Profile, then add your heroes in Heroes (stars, step, SW). Formations and upgrades use what you save here.</div></div>` : '';
+    return `<div class="seg" style="grid-template-columns:repeat(3,1fr)">${tabs.map(([k, l]) => `<button class="${S.sub === k ? 'on' : ''}" data-act="sub" data-v="${k}">${l}</button>`).join('')}</div>
+      ${start}${body}
+      <div class="savebar"><div class="small" style="min-width:0"><div id="save-state">${esc(S.saveState || 'All changes are saved automatically')}</div><div>Gen ${currentGen()} · ${n} hero${n === 1 ? '' : 'es'} in use</div></div><button class="btn" style="padding:10px 18px;font-size:14px" data-act="save">SAVE</button></div>`;
+  }
+
+  function sel(bind, options, value, extra) {
+    return `<select class="in ${extra || ''}" data-bind="${bind}">${options.map(([v, l]) => `<option value="${esc(v)}"${String(v) === String(value) ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+  }
+  function inp(bind, value, attrs) {
+    return `<input class="in" data-bind="${bind}" value="${esc(value)}" ${attrs || 'inputmode="numeric"'}>`;
+  }
+
+  function accProfile() {
+    const p = S.profile;
+    const tiers = Object.keys(WOS.db.troops.inf).sort((a, b) => tierRank(b) - tierRank(a));
+    const ag = autoGen();
+    const gens = [['', ag ? `Auto · Gen ${ag.gen}` : 'Choose your Gen']].concat(Array.from({ length: MAX_GEN }, (_, i) => [MAX_GEN - i, 'Gen ' + (MAX_GEN - i)]));
+    return `
+    <section class="card"><div class="card-title">Player</div>
+      <div class="field"><label>USERNAME</label><div class="in" style="opacity:.7">${esc(S.session.user)}</div></div>
+      <div class="grid2"><div class="field"><label for="st-in">STATE</label><input id="st-in" class="in" data-sbind="state" value="${esc(S.session.state)}" inputmode="numeric"></div>
+      <div class="field"><label for="al-in">ALLIANCE</label><input id="al-in" class="in" data-sbind="alliance" value="${esc(S.session.alliance)}" maxlength="12"></div></div>
+    </section>
+    <section class="card"><div class="card-title">Generation</div>
+      <div class="grid2"><div class="field"><label>CURRENT GEN</label>${sel('genManual', gens, p.genManual == null ? '' : p.genManual)}</div>
+      <div class="field"><label>NEXT GEN IN</label><div class="in" style="opacity:.8">${Number.isFinite(daysToNext()) ? daysToNext() + ' days' : '—'}</div></div></div>
+      <div class="small">${ag
+        ? (ag.src === 'open' ? `Auto: calculated from the opening date of state ${esc(S.session.state)}.` : `Auto: estimated from the transfer schedule for state ${esc(S.session.state)}${ag.src === 'table-near' ? ' (state not listed: taken from the nearest states)' : ''}.`) + ' If it\'s wrong, pick your Gen by hand.'
+        : (S.session.state ? `State ${esc(S.session.state)} isn't in the schedule: pick your Gen by hand.` : 'Enter your state above to get the Gen automatically, or pick it by hand.')}${currentGen() > 17 ? ' Heroes after Gen 17 aren\'t in the database yet.' : ''}</div>
+    </section>
+    <section class="card"><div class="card-title">Spending</div>
+      <div class="grid4">${SPEND.map(([k, l]) => `<button class="pill ${p.spend === k ? 'on' : ''}" data-act="spend" data-v="${k}">${l}</button>`).join('')}</div>
+    </section>
+    <section class="card"><div class="card-head"><div class="card-title">What you do in game</div><div class="small">Pick all that apply</div></div>
+      <div class="pills">${ROLES.map(([k, l]) => `<button class="pill ${p.roles.indexOf(k) >= 0 ? 'on' : ''}" data-act="role" data-v="${k}">${l}</button>`).join('')}</div>
+      <div class="small">Decides which heroes the upgrade advice focuses on.</div>
+    </section>
+    <section class="card"><div class="card-title">Troops</div>
+      ${TYPES.map((t) => `<div style="display:grid;grid-template-columns:30px minmax(0,1fr) 96px 104px;gap:8px;align-items:center">${ticon(t)}<div style="font-size:14px;font-weight:500">${TYPE_NAME[t]}</div>
+        ${sel(`troops.${t}.tier`, tiers.map((x) => [x, x]), p.troops[t].tier)}${inp(`troops.${t}.count`, p.troops[t].count, 'inputmode="numeric" placeholder="count"')}</div>`).join('')}
+      <div class="grid2"><div class="field"><label>MARCH CAPACITY</label>${inp('march', p.march, 'inputmode="numeric" placeholder="e.g. 150000"')}</div>
+      <div class="field"><label>RALLY CAPACITY</label>${inp('rally', p.rally, 'inputmode="numeric" placeholder="e.g. 900000"')}</div></div>
+    </section>
+    <section class="card"><div class="card-head"><div class="card-title">Bonus %</div><div class="small">optional · improves accuracy</div></div>
+      <div style="display:grid;grid-template-columns:72px repeat(4,minmax(0,1fr));gap:6px;font-size:11px;color:var(--muted);text-align:center"><div></div><div>Attack</div><div>Defense</div><div>Lethality</div><div>Health</div></div>
+      ${TYPES.map((t) => `<div style="display:grid;grid-template-columns:72px repeat(4,minmax(0,1fr));gap:6px;align-items:center"><div style="font-size:12px;font-weight:600;color:var(--${t})">${TYPE_NAME[t]}</div>
+        ${['atk', 'def', 'leth', 'hp'].map((k) => `<input class="in mini" data-bind="bonus.${t}.${k}" value="${esc(p.bonus[t][k])}" inputmode="decimal" aria-label="${TYPE_NAME[t]} ${k}">`).join('')}</div>`).join('')}
+      <div class="small">Copy them from the bonus details of one of your battle reports. Empty = average for your Gen.</div>
+    </section>`;
+  }
+
+  function heroList() {
+    const gen = currentGen();
+    let list = WOS.db.heroes.filter((h) => (h.r !== 'L' || h.g <= gen));
+    if (S.heroFilter !== 'all') list = list.filter((h) => (S.heroFilter === 'joiner' ? WOS.joinerPool(gen, 'att').concat(WOS.joinerPool(gen, 'def')).indexOf(h.n) >= 0 : h.t === S.heroFilter));
+    if (S.heroSearch) list = list.filter((h) => h.n.toLowerCase().indexOf(S.heroSearch.toLowerCase()) >= 0);
+    const owned = (h) => isOwned(S.profile.heroes[h.n]);
+    return list.sort((a, b) => (owned(b) - owned(a)) || (b.g - a.g) || a.n.localeCompare(b.n));
+  }
+  function joinerTag(h) {
+    if (!h.sk.length) return '';
+    const c = h.sk[0].c;
+    if (['dmg', 'atk', 'leth', 'edef', 'etaken'].indexOf(c) >= 0 && h.sk[0].to === 'all') return 'ATTACK JOINER';
+    if (['red', 'hp', 'def', 'eatk', 'eleth'].indexOf(c) >= 0 && h.sk[0].to === 'all') return 'DEFENSE JOINER';
+    return '';
+  }
+  function accHeroes() {
+    const levels = [];
+    for (let st = 5; st >= 0; st--) {
+      for (let sp = (st === 5 ? 0 : 5); sp >= 0; sp--) levels.push([`${st}.${sp}`, levelLabel(st, sp)]);
+    }
+    const sws = Array.from({ length: 11 }, (_, i) => [10 - i, 'Lv ' + (10 - i)]);
+    const rows = heroList().map((h) => {
+      const v = S.profile.heroes[h.n];
+      const own = isOwned(v);
+      const tag = joinerTag(h);
+      return `<div class="hero-row ${own ? 'owned' : 'not-owned'}"><div class="hero-name">${ticon(h.t)}<div style="min-width:0"><div class="row" style="gap:6px"><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(h.n)}</div><span class="gen">${h.g ? 'G' + h.g : (h.r === 'E' ? 'Epic' : 'Rare')}</span></div>${tag ? `<div class="jtag">${tag}</div>` : ''}</div></div>
+        <select class="in mini" data-hlevel="${esc(h.n)}" aria-label="${esc(h.n)} stars">${levels.map(([val, l]) => `<option value="${val}"${levelValue(v) === val ? ' selected' : ''}>${l}</option>`).join('')}</select>
+        ${h.sw && h.r === 'L' ? sel(`heroes.${h.n}.sw`, sws, (v && v.sw) || 0, 'mini') : '<div class="small" style="text-align:center">—</div>'}
+        <label class="nocheck" title="Not owned"><input type="checkbox" data-hown="${esc(h.n)}"${own ? '' : ' checked'} aria-label="${esc(h.n)} not owned"></label></div>`;
+    }).join('');
+    const filters = [['all', 'All'], ['inf', 'Infantry'], ['lan', 'Lancers'], ['mar', 'Marksmen'], ['joiner', 'Joiners']];
+    return `<div class="row"><input class="in" id="hero-search" placeholder="Search hero" value="${esc(S.heroSearch)}" aria-label="Search hero"></div>
+      <div class="pills">${filters.map(([k, l]) => `<button class="pill ${S.heroFilter === k ? 'on' : ''}" data-act="hfilter" data-v="${k}">${l}</button>`).join('')}</div>
+      <div class="card blue"><div class="note">For each hero: <b>stars</b> (left = stars, right = step, e.g. 3/4) and <b>special weapon</b> level. Tick <b>Not owned</b> for heroes you don't have: they're never used in formations, but can be suggested to unlock. Choosing stars or SW unticks it. From 4★ skills count as max; joiners always count as max.</div></div>
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 70px 64px 52px;gap:6px;padding:0 8px" class="small"><div>HERO</div><div style="text-align:center">STARS</div><div style="text-align:center">SW</div><div style="text-align:center">NOT OWNED</div></div>
+      ${rows || '<div class="loading">No heroes match.</div>'}`;
+  }
+
+  function accGear() {
+    const q = [['L', 'Legend.'], ['M', 'Mythic'], ['E', 'Epic'], ['R', 'Rare']];
+    return `<div class="note">Enter your <b>2 best sets per troop type</b>: for each piece the quality, enhancement (+0–100) and mastery level (Lv 0–20) shown on its icon. <b>Who wears them is decided by the calculator</b> for each event. Legendary empowerment bonuses (+20/+60/+100) are applied automatically.</div>
+      ${TYPES.map((t) => `<section class="card"><div class="row">${ticon(t)}<div class="card-title">${TYPE_NAME[t]}</div></div>
+        <div class="gear-grid small" style="text-align:center"><div></div>${WOS.PIECES.map((pc) => `<div>${PIECE_NAME[pc]}</div>`).join('')}</div>
+        ${['A', 'B'].map((k) => `<div class="gear-grid"><div style="display:flex;align-items:center;font-size:12px;font-weight:700;color:${k === 'A' ? 'var(--gold)' : 'var(--soft)'}">Set ${k}</div>
+          ${S.profile.gear[t][k].map((pc, i) => `<div class="gear-cell q-${esc(pc.q)}">
+            <select data-bind="gear.${t}.${k}.${i}.q" aria-label="quality">${q.map(([v, l]) => `<option value="${v}"${pc.q === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
+            <input data-bind="gear.${t}.${k}.${i}.p" value="${esc(pc.p)}" placeholder="+" inputmode="numeric" aria-label="enhancement">
+            <input data-bind="gear.${t}.${k}.${i}.lv" value="${esc(pc.lv)}" placeholder="Lv" inputmode="numeric" aria-label="mastery level"></div>`).join('')}</div>`).join('')}
+      </section>`).join('')}`;
+  }
+
+  /* ---------- formations ---------- */
+
+  function viewForm() {
+    const tabs = [['rally', 'Rally'], ['solo', 'Solo'], ['bear', 'Bear'], ['joe', 'Joe'], ['canyon', 'Canyon'], ['arena', 'Arena']];
+    const gen = currentGen();
+    return `<div class="tabs" style="grid-template-columns:repeat(6,1fr)">${tabs.map(([k, l]) => `<button class="${S.ftab === k ? 'on' : ''}" data-act="ftab" data-v="${k}">${l}</button>`).join('')}</div>
+      <div class="seg" style="grid-template-columns:1fr 1fr"><button class="${S.fmode === 'mine' ? 'on' : ''}" data-act="fmode" data-v="mine">My account</button><button class="${S.fmode === 'meta' ? 'on' : ''}" data-act="fmode" data-v="meta">Gen ${gen} meta</button></div>
+      ${S.fmode === 'meta' ? `<div class="card warm"><div class="note"><b>This is not your account.</b> It's the Gen ${gen} meta: every hero available in Gen ${gen} at 5★ and SW 10, with max gear, using your troops and bonuses. Switch to <b>My account</b> for your own formation.</div></div>` : ''}
+      <div id="form-body"><div class="loading">Calculating…</div></div>`;
+  }
+
+  function renderFormBody() {
+    const el = $('#form-body');
+    if (!el) return;
+    setTimeout(() => {
+      try { el.innerHTML = formBody(); } catch (e) { el.innerHTML = `<div class="card red"><div class="note">Calculation error: ${esc(e.message)}</div></div>`; }
+    }, 20);
+  }
+
+  function noHeroes() {
+    return '<div class="card"><div class="note">Add your heroes in <b>Account › Heroes</b> to get formations.</div></div>';
+  }
+
+  function metaGap(kind) {
+    if (S.fmode !== 'mine') return '';
+    const mine = cached('gap-mine-' + kind, () => kind === 'bear' ? WOS.optimizeBear(account()) : WOS.optimizeBattle(account(), { mode: 'attack', kind: 'rally' }));
+    const meta = cached('gap-meta-' + kind, () => kind === 'bear' ? WOS.optimizeBear(WOS.metaAccount(account())) : WOS.optimizeBattle(WOS.metaAccount(account()), { mode: 'attack', kind: 'rally' }));
+    if (!mine || !meta) return '';
+    const a = kind === 'bear' ? mine.damage : mine.power;
+    const b = kind === 'bear' ? meta.damage : meta.power;
+    const gap = a > 0 ? Math.round((b / a - 1) * 100) : 0;
+    return gap > 0 ? `<div class="small">The Gen ${currentGen()} meta would be about <b>+${gap}%</b> stronger here. <a href="#" data-act="nav" data-v="up">What you're missing</a></div>` : '';
+  }
+
+  function enemyForm(key) {
+    const e = S.enemy[key];
+    const opts = (t) => [['', `${TYPE_NAME[t]} hero`]].concat(heroOptions(WOS.db.heroes.filter((h) => h.t === t && h.sk.length)));
+    const st = [5, 4, 3, 2, 1, 0].map((x) => [x, x + '★']);
+    return `<section class="card red" id="enemy-card"><div class="card-head"><div class="card-title" style="color:var(--bad)">Enemy <span class="small" style="text-transform:none">· optional</span></div><button class="chip chip-btn" data-act="enemy-clear" data-v="${key}">Clear</button></div>
+      ${TYPES.map((t, i) => `<div style="display:grid;grid-template-columns:6px minmax(0,1fr) 70px;gap:8px;align-items:center"><div style="width:6px;height:28px;border-radius:3px;background:var(--${t})"></div>
+        <select class="in" data-ebind="${key}.heroes.${i}.n">${opts(t).map(([v, l]) => `<option value="${esc(v)}"${e.heroes[i].n === v ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>
+        <select class="in" data-ebind="${key}.heroes.${i}.st">${st.map(([v, l]) => `<option value="${v}"${String(e.heroes[i].st) === String(v) ? ' selected' : ''}>${l}</option>`).join('')}</select></div>`).join('')}
+      <div style="display:grid;grid-template-columns:50px repeat(3,minmax(0,1fr));gap:6px;align-items:center"><div class="small">Ratio %</div>
+        ${TYPES.map((t) => `<input class="in mini" style="color:var(--${t})" data-ebind="${key}.ratio.${t}" value="${esc(e.ratio[t])}" placeholder="${t === 'inf' ? 'inf' : t === 'lan' ? 'lan' : 'mar'}" inputmode="numeric">`).join('')}</div>
+      <div class="small">Add the enemy's heroes and ratio to adapt the formation to them. Leave empty for your best formation in general.</div>
+      <button class="btn" data-act="recalc">CALCULATE</button></section>`;
+  }
+
+  function battleCard(res, kind, mode, key) {
+    if (!res) return noHeroes();
+    const who = S.fmode === 'meta' ? 'Meta' : 'Your';
+    const enemyTxt = res.enemyGiven ? (S.fmode === 'meta' ? 'Meta vs this enemy' : 'Against this enemy') : (mode === 'attack' ? who + ' best attack' : who + ' best defense');
+    const out = res.result;
+    const verdict = res.enemyGiven ? (out.win ? `<span class="badge-ok" style="color:var(--ok)">Likely win · ${Math.round(out.remA * 100)}% left</span>` : `<span class="badge-ok" style="color:var(--bad)">Likely loss</span>`) : '';
+    return `<section class="card"><div class="card-head"><div class="card-title">${enemyTxt}</div>${verdict || '<button class="chip chip-btn" data-act="refine">Refine vs enemy ↓</button>'}</div>
+      <div class="label">${kind === 'rally' ? (mode === 'attack' ? 'Rally leader' : 'Garrison stats provider') : 'Your march'} · 3 heroes · gear</div>
+      ${TYPES.map((t) => unitRow(res.units[t], res.units[t] ? 'Gear A' : '', 'var(--gold)')).join('')}
+      <div class="label">Troop ratio</div>
+      ${ratioBar('Best', res.ratio, 'var(--ok)')}${res.ratio2 ? ratioBar('Second', res.ratio2, 'var(--muted)') : ''}${legend}
+      ${res.joiners ? `<div class="label">Ask for these 4 joiners</div>${joinerRows(res.joiners.chosen)}${altPills(res.joiners.alts)}` : ''}
+      <div class="note" style="border-top:1px solid #1E2A44;padding-top:10px"><b>Why:</b> ${whyBattle(res, mode)}</div></section>`;
+  }
+  function whyBattle(res, mode) {
+    const r = res.ratio;
+    const parts = [];
+    if (mode === 'defense') parts.push('in defense survival comes first, so infantry stays at 50% or more (community rule)');
+    else if (r.mar >= 50) parts.push('your marksmen deal the most damage, so the ratio leans on them while infantry holds the front line');
+    else parts.push('a solid front line protects your damage dealers');
+    if (res.joiners) parts.push('joiner buffs of different types (damage, attack, lethality) multiply each other instead of just adding up');
+    return parts.join('; ') + '.';
+  }
+
+  function formBody() {
+    const acc = activeAccount();
+    const heroesCount = Object.keys(acc.heroes || {}).length;
+    if (!heroesCount) return noHeroes();
+    const tag = S.fmode;
+    if (S.ftab === 'rally' || S.ftab === 'solo') {
+      const key = S.ftab;
+      const mode = key === 'rally' ? S.rallyMode : S.soloMode;
+      const enemy = S.enemy[key];
+      const res = cached(`${tag}-${key}-${mode}-${JSON.stringify(enemy)}`, () => WOS.optimizeBattle(acc, { mode, kind: key, enemy }));
+      return `<div class="seg warm" style="grid-template-columns:1fr 1fr"><button class="${mode === 'attack' ? 'on' : ''}" data-act="bmode" data-v="attack">ATTACK</button><button class="${mode === 'defense' ? 'on' : ''}" data-act="bmode" data-v="defense">DEFENSE</button></div>
+        ${metaGap('rally')}${battleCard(res, key, mode, key)}${enemyForm(key)}`;
+    }
+    if (S.ftab === 'bear') {
+      const b = cached(tag + '-bear', () => WOS.optimizeBear(acc));
+      if (!b) return noHeroes();
+      return `${metaGap('bear')}<section class="card"><div class="card-title">Open your rally</div>
+        ${TYPES.map((t) => unitRow(b.units[t], b.units[t] ? 'Gear A' : '')).join('')}
+        ${ratioBar('Best', b.ratio, 'var(--ok)')}${b.ratio2 ? ratioBar('Second', b.ratio2, 'var(--muted)') : ''}${legend}
+        <div class="label">Joiners to ask for</div>${joinerRows(b.joiners.chosen)}</section>
+        ${b.ownJoin ? `<section class="card warm"><div class="card-head"><div><div class="label" style="color:#E8D9B8">When you join a Bear rally</div><div class="note">1st slot of your march</div></div><div class="h-font" style="font-size:20px;color:var(--gold)">${esc(b.ownJoin)}</div></div></section>` : ''}
+        <section class="card"><div class="card-head"><div class="card-title">Bear joiners</div><div class="small">max 8</div></div>
+        ${b.top.map((x) => `<div style="display:grid;grid-template-columns:minmax(0,1fr) 62px;gap:8px;align-items:center;border-top:1px solid #1E2A44;padding-top:7px"><div><div class="jname">${esc(x.n)}</div><div class="jeff">${esc(skillText(x.n))}</div></div><div class="badge-ok" style="text-align:center;color:${x.tier === 'Top' ? 'var(--ok)' : 'var(--gold)'}">${x.tier}</div></div>`).join('')}</section>
+        <div class="note"><b>Why:</b> the Bear doesn't fight back, so damage is everything. A small share of infantry and lancers still scored higher than 0/0/100 in community tests.</div>`;
+    }
+    if (S.ftab === 'joe') {
+      const j = cached(tag + '-joe-' + S.joeMode, () => WOS.optimizeJoe(acc, S.joeMode));
+      const full = j.full;
+      return `<section class="card"><div class="card-title">Reinforce allies</div><div class="small">Your 6 marches: only the 1st hero of each march counts</div>
+        ${j.reinforce.length ? j.reinforce.map((n, i) => `<div class="list-row"><div class="rank">${i + 1}</div><div><div class="jname">${esc(n)}</div><div class="jeff">${esc(skillText(n))}</div></div></div>`).join('') : '<div class="small">No defensive first-slot heroes in your roster: Sergey and Patrick are free options.</div>'}
+        ${altPills(j.reinforceAlt)}${ratioBar('Ratio', j.cityRatio, 'var(--ok)')}</section>
+        <section class="card red"><div class="card-title" style="color:#FECACA">Waves 10 &amp; 20 · HQ defense</div>
+        <div class="label">HQ mode · set by your alliance</div>
+        <div class="seg" style="grid-template-columns:1fr 1fr"><button class="${!full ? 'on' : ''}" data-act="joe" data-v="standard">Standard</button><button class="${full ? 'on' : ''}" data-act="joe" data-v="full">Full marksmen</button></div>
+        <div class="small">Switch to full marksmen when infantry can no longer clear wave 20.</div>
+        <div class="label" style="color:#FECACA">If you lead the defense</div>
+        ${TYPES.map((t) => unitRow(j.hq.units && j.hq.units[t], j.hq.units && j.hq.units[t] ? 'Gear A' : '')).join('')}
+        ${ratioBar('Wave 10', j.hq.w10, '#FECACA')}${ratioBar('Wave 20', j.hq.w20, '#FECACA')}
+        <div class="small">The strongest player present provides the stats for the whole garrison. If you can, apply for Minister of Defense: +10% lethality.</div>
+        <div class="label" style="color:#FECACA">If you join the HQ defense</div>
+        <div class="list-row"><div class="rank">1</div><div><div class="jname">${esc(j.hq.joinHero)} · ${WOS.ratioText(j.hq.joinRatio)}</div><div class="jeff">${esc(skillText(j.hq.joinHero))}</div></div></div>
+        ${altPills(j.hq.joinAlt)}
+        ${full ? '<div class="card warm"><div class="note"><b>Works only if everyone sends 100% marksmen</b>, leader included. Infantry acts first and takes the first kills: one infantry march splits the points unfairly.</div></div><div class="small">Don\'t use Sergey or Patrick in the 1st slot here: this needs damage, not defense.</div>' : ''}
+        </section>`;
+    }
+    if (S.ftab === 'canyon') {
+      const sq = cached(tag + '-canyon', () => WOS.optimizeCanyon(acc));
+      const names = ['Main', 'Support', 'Occupation'];
+      return `<div class="card blue"><div class="note">In Canyon Clash you only pick heroes, troops are provided. Each hero and gear set is used once: the calculator splits them across 3 squads for the best total.</div></div>
+        ${sq.map((s, i) => `<section class="card ${i === 0 ? 'warm' : ''}"><div class="card-title">${i + 1} · ${names[i]}</div>${s.map((u, k) => unitRow(u, u && u.set ? 'Gear ' + u.set : (u ? 'Base gear' : ''), u && u.set === 'A' ? 'var(--gold)' : 'var(--soft)')).join('')}</section>`).join('')}`;
+    }
+    if (S.ftab === 'arena') {
+      const a = cached(tag + '-arena', () => WOS.optimizeArena(acc));
+      if (!a) return noHeroes();
+      const slot = (u, pos) => `<div class="arena-slot"><div class="small" style="font-weight:700;color:${pos.indexOf('1') === 0 ? 'var(--gold)' : 'var(--muted)'}">POS. ${pos}</div>${ticon(u.h.t)}<div style="font-size:13px;font-weight:600">${esc(u.h.n)}</div><div class="small">${levelLabel(u.st, u.sp || 0)}</div>${u.set ? `<div class="tag" style="color:${u.set === 'A' ? 'var(--gold)' : 'var(--soft)'}">Gear ${u.set}</div>` : ''}</div>`;
+      const f = a.front;
+      const b = a.back;
+      return `<section class="card"><div class="card-head"><div class="card-title">Arena lineup</div><div class="small">Exploration skills</div></div>
+        <div class="label" style="text-align:center">Front row · tank</div>
+        <div class="grid2" style="padding:0 30px">${f[1] ? slot(f[1], '2') : '<div></div>'}${f[0] ? slot(f[0], '1 · TANK') : ''}</div>
+        <div class="label" style="text-align:center">Back row · damage</div>
+        <div class="grid3">${b[2] ? slot(b[2], '3') : '<div></div>'}${b[1] ? slot(b[1], '2') : '<div></div>'}${b[0] ? slot(b[0], '1') : ''}</div></section>
+        ${a.bench.length ? `<section class="card"><div class="card-title">Alternatives</div><div class="pills">${a.bench.map((u) => `<span class="pill" style="cursor:default">${esc(u.h.n)}</span>`).join('')}</div></section>` : ''}
+        <div class="note"><b>Why:</b> the Arena uses Exploration skills. In each row position 1 is on the right: the toughest hero goes front-right, the biggest damage dealer back-right.</div>
+        <div class="small">An Expedition Arena alternating weekly is starting in November: its rules will be added once known.</div>`;
+    }
+    return '';
+  }
+
+  /* ---------- upgrades / next gen ---------- */
+
+  function viewUp() {
+    return `<div><div class="h-font" style="font-size:24px">Where to invest</div><div class="small">Only heroes that improve the formations you actually use.</div></div>
+      <section class="card"><div class="card-head"><div class="label">Based on what you do</div><a href="#" data-act="nav" data-v="account">Edit</a></div>
+      <div class="pills">${(S.profile.roles.length ? S.profile.roles : ['rallyAtk', 'bear']).map((r) => `<span class="pill on" style="cursor:default">${esc((ROLES.find((x) => x[0] === r) || [r, r])[1])}</span>`).join('')}</div>
+      ${S.profile.roles.length ? '' : '<div class="small">Nothing selected yet: using attack rallies and Bear as default.</div>'}</section>
+      <div id="up-body"><div class="loading">Calculating…</div></div>`;
+  }
+  function renderUpBody() {
+    const el = $('#up-body');
+    if (!el) return;
+    setTimeout(() => {
+      const acc = account();
+      if (!Object.keys(acc.heroes).length) { el.innerHTML = noHeroes(); return; }
+      const adv = cached('up', () => WOS.upgradeAdvice(acc, S.profile.roles));
+      const items = adv.invest.map((x, i) => `<section class="card" style="${i === 0 ? 'border-color:#6B4A12' : ''}">
+        <div class="row"><div class="rank" style="width:28px;height:28px;border-radius:8px;background:${i === 0 ? 'var(--ember)' : '#1B2A47'};color:${i === 0 ? '#1A1206' : 'var(--ice)'};display:flex;align-items:center;justify-content:center">${i + 1}</div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:600">${esc(x.label)}</div><div class="small">Now: ${esc(x.now)}</div></div><div class="h-font" style="color:var(--ok)">+${x.gain.toFixed(1)}%</div></div>
+        <div class="note"><b>Why:</b> ${x.kind === 'unlock' ? `you don't own ${esc(x.hero)} yet: at this level it would enter your formations for what you do. Below it, your current heroes are better.` : (x.inUse ? `${esc(x.hero)} is in your best formations, so this improves the events you play.` : `with this upgrade ${esc(x.hero)} becomes better than the hero you use now.`)}</div></section>`).join('');
+      const avoid = adv.avoid.length ? `<section class="card red"><div class="card-title" style="color:var(--bad)">Don't invest</div>
+        <div class="note">${adv.avoid.map(esc).join(', ')}: not used in your best formations for what you do, and one more upgrade doesn't change that.</div></section>` : '';
+      const days = daysToNext();
+      const soon = Number.isFinite(days) && days <= 30 && currentGen() < 17
+        ? `<section class="card warm"><div class="note"><b>Next gen in ${days} days.</b> Prefer upgrades that are cheap or that keep value (SW, joiner skills). Avoid pushing an old hero to 5★ now: check Next Gen first.</div></section>` : '';
+      el.innerHTML = soon + (items || '<div class="card"><div class="note">No upgrade gives a clear gain right now: your current heroes are already the best choice for what you do.</div></div>') + avoid +
+        '<div class="small">Estimated by the simulator. The more reports are sent, the more accurate it gets.</div>';
+    }, 20);
+  }
+
+  function viewGen() {
+    const gen = currentGen();
+    const days = daysToNext();
+    return `<section class="card"><div class="label">Next generation</div>
+      <div class="row" style="align-items:baseline"><div class="h-font" style="font-size:42px;color:var(--ember)">Gen ${gen + 1}</div>${Number.isFinite(days) ? `<div class="small">in ${days} days</div>` : ''}</div></section>
+      <div id="gen-body"><div class="loading">Calculating…</div></div>`;
+  }
+  function renderGenBody() {
+    const el = $('#gen-body');
+    if (!el) return;
+    setTimeout(() => {
+      const acc = account();
+      if (!Object.keys(acc.heroes).length) { el.innerHTML = noHeroes(); return; }
+      const adv = cached('gen', () => WOS.nextGenAdvice(acc, S.profile.roles, S.profile.spend));
+      if (!adv.picks.length) { el.innerHTML = '<div class="card"><div class="note">No newer generation is known yet.</div></div>'; return; }
+      const days = daysToNext();
+      const inv = adv.picks.filter((p) => p.verdict === 'Invest').map((p) => TYPE_NAME[p.type].toLowerCase());
+      let timing = '';
+      if (Number.isFinite(days) && inv.length) {
+        timing = days <= 30
+          ? `<section class="card warm"><div class="note"><b>Timing:</b> Gen ${adv.gen} arrives in ${days} days. Save shards, SW materials and gear for your ${inv.join(' / ')} hero now: don't push current ${inv.join(' / ')} heroes to 5★, they'll be replaced soon.</div></section>`
+          : `<section class="card"><div class="note"><b>Timing:</b> Gen ${adv.gen} is ${days} days away. You still get good use from upgrades on your current heroes; start saving about 30 days before.</div></section>`;
+      }
+      el.innerHTML = timing + adv.picks.map((p, i) => {
+        const color = p.verdict === 'Invest' ? 'var(--ok)' : (p.verdict === 'Skip' ? 'var(--muted)' : 'var(--gold)');
+        const target = p.target ? `${p.target.st}★${p.target.sw ? ' + SW ' + p.target.sw : ''}` : '—';
+        return `<section class="card ${p.verdict === 'Invest' && i === 0 ? 'warm' : ''}"><div class="row">${ticon(p.type)}<div style="flex:1"><div style="font-size:16px;font-weight:600">${esc(p.name)}</div><div class="small">Gen ${adv.gen} · ${TYPE_NAME[p.type]}</div></div><div class="badge-ok" style="color:${color}">${p.verdict}</div></div>
+          <div class="grid2"><div class="card" style="padding:10px;gap:2px"><div class="label">Useful from</div><div class="h-font" style="font-size:18px">${target}</div></div><div class="card" style="padding:10px;gap:2px"><div class="label">Gain when maxed</div><div class="h-font" style="font-size:18px">${p.gainMax > 0 ? '+' + p.gainMax.toFixed(1) + '%' : '—'}</div></div></div>
+          <div class="note"><b>Why:</b> ${p.target ? `from ${target} this hero makes your formations stronger for what you do.` : 'even maxed, this hero doesn\'t beat the heroes you already use for what you do.'} ${p.verdict === 'Only if spare' ? 'With your spending, put resources here only after the first pick.' : ''}</div></section>`;
+      }).join('') + '<div class="small">Advice depends on your spending profile and on what you do in game (Account › Profile).</div>';
+    }, 20);
+  }
+
+  /* ---------- report ---------- */
+
+  function viewReport() {
+    const r = S.report;
+    const owned = Object.keys(account().heroes);
+    const allHeroes = heroOptions(WOS.db.heroes.filter((h) => h.sk.length));
+    const ownedOpts = heroOptions(owned.map((n) => WOS.hero(n)).filter(Boolean));
+    const types = [['rally', 'Rally'], ['garrison', 'Garrison'], ['solo', '1 vs 1'], ['bear', 'Bear'], ['joe', 'Crazy Joe']];
+    const heroSel = (bind, list, val) => `<select class="in" data-rbind="${bind}"><option value="">—</option>${list.map(([n, l]) => `<option value="${esc(n)}"${val === n ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
+    const troopRow = (label, base) => `<div style="display:grid;grid-template-columns:70px repeat(3,minmax(0,1fr));gap:6px;align-items:center"><div class="small">${label}</div>${TYPES.map((t) => `<input class="in mini" style="color:var(--${t})" data-rbind="${base}.${t}" value="${esc(getPath(r, base + '.' + t))}" inputmode="numeric" placeholder="${t}">`).join('')}</div>`;
+    const pvp = r.type !== 'bear';
+    return `<div class="note">Every report makes the calculator more accurate for everyone. Copy the values from the battle report in game.</div>
+      <div class="pills">${types.map(([k, l]) => `<button class="pill ${r.type === k ? 'on' : ''}" data-act="rtype" data-v="${k}">${l}</button>`).join('')}</div>
+      ${pvp ? `<div class="seg" style="grid-template-columns:1fr 1fr"><button class="${r.role === 'attacker' ? 'on' : ''}" data-act="rrole" data-v="attacker">I attacked</button><button class="${r.role === 'defender' ? 'on' : ''}" data-act="rrole" data-v="defender">I defended</button></div>` : ''}
+      <section class="card"><div class="card-title">Your side</div>
+        <div class="label">Your 3 heroes</div>${[0, 1, 2].map((i) => heroSel(`myHeroes.${i}.n`, ownedOpts, r.myHeroes[i].n)).join('')}
+        ${troopRow('Troops', 'myTroops')}<div class="small">Gear, stars and bonuses come from your profile.</div></section>
+      ${pvp ? `<section class="card red"><div class="card-title" style="color:var(--bad)">Enemy</div>
+        ${[0, 1, 2].map((i) => `<div style="display:grid;grid-template-columns:minmax(0,1fr) 70px;gap:6px">${heroSel(`enemyHeroes.${i}.n`, allHeroes, r.enemyHeroes[i].n)}<select class="in" data-rbind="enemyHeroes.${i}.st">${[5, 4, 3, 2, 1, 0].map((x) => `<option value="${x}"${String(r.enemyHeroes[i].st) === String(x) ? ' selected' : ''}>${x}★</option>`).join('')}</select></div>`).join('')}
+        ${troopRow('Troops', 'enemyTroops')}
+        <details><summary class="small" style="cursor:pointer">Enemy bonus % (12 fields, optional)</summary>
+        ${TYPES.map((t) => `<div style="display:grid;grid-template-columns:70px repeat(4,minmax(0,1fr));gap:6px;align-items:center;margin-top:6px"><div class="small" style="color:var(--${t})">${TYPE_NAME[t]}</div>${['atk', 'def', 'leth', 'hp'].map((k) => `<input class="in mini" data-rbind="enemyBonus.${t}.${k}" value="${esc(r.enemyBonus[t][k] || '')}" placeholder="${k}" inputmode="decimal">`).join('')}</div>`).join('')}
+        </details></section>` : ''}
+      <section class="card"><div class="card-title">Result</div>
+        ${pvp ? `<div class="grid2"><button class="pill ${r.result === 'win' ? 'on' : ''}" data-act="rres" data-v="win">VICTORY</button><button class="pill ${r.result === 'loss' ? 'on' : ''}" data-act="rres" data-v="loss">DEFEAT</button></div>
+        ${troopRow('Your losses', 'myLoss')}${troopRow('Enemy losses', 'enemyLoss')}` : ''}
+        ${r.type === 'bear' ? `<div class="field"><label>DAMAGE DEALT</label><input class="in" data-rbind="bearDamage" value="${esc(r.bearDamage)}" inputmode="numeric"></div>` : ''}
+        ${r.type === 'joe' ? `<div class="field"><label>CRAZY JOE LEVEL</label><input class="in" data-rbind="joeLevel" value="${esc(r.joeLevel)}" inputmode="numeric"></div>` : ''}
+        <div class="field"><label>JOINERS ACTIVATED (from the report)</label><input class="in" data-rbind="joiners" value="${esc(r.joiners)}" placeholder="e.g. Jessie, Jasser"></div>
+        <div class="field"><label>NOTES</label><input class="in" data-rbind="notes" value="${esc(r.notes)}" maxlength="300"></div></section>
+      <button class="btn" data-act="send-report">SEND REPORT</button>
+      ${S.lastPrediction ? `<section class="card blue"><div class="note">${esc(S.lastPrediction)}</div></section>` : '<div class="small">After sending you\'ll see what the calculator had predicted, to compare it with the real result.</div>'}`;
+  }
+
+  /* ---------- render & events ---------- */
+
+  function render() {
+    const app = $('#app');
+    if (!S.session) { app.innerHTML = viewLogin(S.loginError); return; }
+    let body = '';
+    if (S.view === 'account') body = viewAccount();
+    else if (S.view === 'form') body = viewForm();
+    else if (S.view === 'up') body = viewUp();
+    else if (S.view === 'gen') body = viewGen();
+    else body = viewReport();
+    app.innerHTML = `${header()}<main>${body}</main>${bottomNav()}`;
+    if (S.view === 'form') renderFormBody();
+    if (S.view === 'up') renderUpBody();
+    if (S.view === 'gen') renderGenBody();
+  }
+
+  async function doLogin(user, code) {
+    const btn = $('#login-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'CHECKING…'; }
+    try {
+      const r = await api('login', { user, code });
+      if (!r.ok) { S.loginError = r.error || 'Invalid username or code'; render(); return; }
+      S.session = { user, code, state: r.state || '', alliance: r.alliance || '', role: r.role || 'user', stateOpen: r.stateOpen || '' };
+      S.profile = mergeProfile(r.profile);
+      S.loginError = '';
+      try { sessionStorage.setItem('wostop_session', JSON.stringify({ user, code })); } catch (e) { /* ignore */ }
+      render();
+    } catch (e) {
+      S.loginError = 'Connection error, try again.'; render();
+    }
+  }
+
+  document.addEventListener('submit', (ev) => {
+    if (ev.target.id === 'login-form') {
+      ev.preventDefault();
+      doLogin($('#lu').value.trim(), $('#lc').value.trim());
+    }
+  });
+
+  document.addEventListener('click', async (ev) => {
+    const el = ev.target.closest('[data-act]');
+    if (!el) return;
+    const act = el.dataset.act;
+    const v = el.dataset.v;
+    if (el.tagName === 'A') ev.preventDefault();
+    if (act === 'nav') { S.view = v; window.scrollTo(0, 0); render(); }
+    else if (act === 'sub') { S.sub = v; render(); }
+    else if (act === 'logout') {
+      clearTimeout(S.saveTimer); await saveNow();
+      S.session = null; S.profile = null; S.cache = {};
+      try { sessionStorage.removeItem('wostop_session'); } catch (e) { /* ignore */ }
+      render();
+    } else if (act === 'spend') { S.profile.spend = v; scheduleSave(); render(); }
+    else if (act === 'role') {
+      const i = S.profile.roles.indexOf(v);
+      if (i >= 0) S.profile.roles.splice(i, 1); else S.profile.roles.push(v);
+      scheduleSave(); render();
+    } else if (act === 'hfilter') { S.heroFilter = v; render(); }
+    else if (act === 'ftab') { S.ftab = v; render(); }
+    else if (act === 'fmode') { S.fmode = v; render(); }
+    else if (act === 'bmode') { if (S.ftab === 'rally') S.rallyMode = v; else S.soloMode = v; render(); }
+    else if (act === 'joe') { S.joeMode = v; render(); }
+    else if (act === 'enemy-clear') { S.enemy[v] = blankEnemy(); render(); }
+    else if (act === 'recalc') { render(); }
+    else if (act === 'refine') { const c = $('#enemy-card'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    else if (act === 'rtype') { S.report.type = v; render(); }
+    else if (act === 'rrole') { S.report.role = v; render(); }
+    else if (act === 'rres') { S.report.result = v; render(); }
+    else if (act === 'send-report') { sendReport(el); }
+    else if (act === 'save') { clearTimeout(S.saveTimer); await saveNow(); toast(S.saveState === 'Saved' ? 'Saved: formations and upgrades now use these data' : S.saveState); }
+  });
+
+  document.addEventListener('change', (ev) => {
+    const t = ev.target;
+    if (t.dataset.sbind) {
+      S.session[t.dataset.sbind] = t.value.trim().slice(0, t.dataset.sbind === 'alliance' ? 12 : 10);
+      scheduleSave();
+      const hdr = document.querySelector('header.top');
+      if (hdr) hdr.outerHTML = header();
+      if (t.dataset.sbind === 'state') { clearTimeout(S.stTimer); S.stTimer = setTimeout(() => { S.cache = {}; render(); const el = $('#st-in'); if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); } }, 700); }
+      return;
+    }
+    if (t.dataset.hlevel || t.dataset.hown) {
+      const name = t.dataset.hlevel || t.dataset.hown;
+      const h = S.profile.heroes[name] || (S.profile.heroes[name] = { st: 0, sp: 0, sw: 0 });
+      if (t.dataset.hlevel) {
+        const parts = t.value.split('.');
+        h.st = num(parts[0], 0); h.sp = num(parts[1], 0); h.own = true;
+      } else {
+        h.own = !t.checked;
+        if (h.st === '' || h.st == null) { h.st = 0; h.sp = 0; }
+      }
+      if (h.sw == null) h.sw = 0;
+      render(); scheduleSave();
+      return;
+    }
+    if (t.dataset.bind) {
+      setPath(S.profile, t.dataset.bind, t.value);
+      if (/^heroes\./.test(t.dataset.bind)) {
+        const h = S.profile.heroes[t.dataset.bind.split('.')[1]];
+        if (h) {
+          // setting the SW means the player owns the hero
+          if (h.st === '' || h.st == null) { h.st = 0; h.sp = 0; }
+          h.own = true;
+        }
+        render();
+      }
+      if (/^gear\..*\.q$/.test(t.dataset.bind)) t.parentNode.className = 'gear-cell q-' + t.value;
+      if (t.dataset.bind === 'genManual') { S.cache = {}; render(); }
+      scheduleSave();
+    } else if (t.dataset.ebind) {
+      setPath(S.enemy, t.dataset.ebind, t.value);
+    } else if (t.dataset.rbind) {
+      setPath(S.report, t.dataset.rbind, t.value);
+    }
+  });
+
+  document.addEventListener('input', (ev) => {
+    if (ev.target.id === 'hero-search') {
+      S.heroSearch = ev.target.value;
+      clearTimeout(S.searchTimer);
+      S.searchTimer = setTimeout(() => {
+        render();
+        const s = $('#hero-search');
+        if (s) { s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
+      }, 250);
+    }
+  });
+
+  async function sendReport(btn) {
+    const r = S.report;
+    if (r.type !== 'bear' && !r.result) { toast('Choose victory or defeat first'); return; }
+    let prediction = null;
+    try { prediction = WOS.predict(account(), r); } catch (e) { prediction = null; }
+    btn.disabled = true; btn.textContent = 'SENDING…';
+    try {
+      const res = await api('report', { user: S.session.user, code: S.session.code, report: Object.assign({}, r, { prediction, profileGen: currentGen(), sentAt: new Date().toISOString() }) });
+      if (!res.ok) throw new Error(res.error || 'error');
+      S.lastPrediction = prediction
+        ? `Report sent. The calculator had predicted a ${prediction.win ? 'win' : 'loss'} with ${prediction.myLeft}% of your troops left (enemy ${prediction.enemyLeft}%).`
+        : 'Report sent. Thanks! (No prediction: troop numbers were missing.)';
+      S.report = blankReport();
+      render();
+    } catch (e) {
+      btn.disabled = false; btn.textContent = 'SEND REPORT';
+      toast('Not sent: ' + e.message);
+    }
+  }
+
+  /* ---------- boot ---------- */
+
+  WOS.setDB(window.WOS_DB);
+  render();
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('wostop_session') || 'null');
+    if (saved && saved.user) doLogin(saved.user, saved.code);
+  } catch (e) { /* ignore */ }
+  window.addEventListener('beforeunload', () => { if (S.saveState === 'Unsaved changes') saveNow(); });
+})();
+
+</script>
+</body>
+</html>
