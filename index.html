@@ -182,7 +182,10 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
   /* ---------- account helpers ---------- */
 
   // typical total stat bonus % of an active player of that generation (real reports: Gen 9 ~ 1000-2200%)
-  function defaultBonus(gen) { return 100 + 135 * (gen || 1); }
+  // base bonus (without heroes) when the profile is empty; measured bases at Gen 9: 660-810% attack/defense,
+  // 510-600% lethality/health (no-hero self-tests). The old 100+135·gen (1315% at Gen 9) included heroes.
+  function defaultBonus(gen, k) { return (k === 'leth' || k === 'hp' ? 65 : 80) * (gen || 1); }
+  const RATIO_RULES = { attackMinInf: 40, maxLan: 30, minMar: 20 };
   function defaultRally(gen) { return 150000 + 60000 * (gen || 1); }
   function defaultMarch(gen) { return 40000 + 12000 * (gen || 1); }
 
@@ -327,8 +330,8 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       const base = troopBase(t, tr.tier || 'T10');
       const bon = (acc.bonus && acc.bonus[t]) || {};
       const pct = {
-        atk: num(bon.atk, defaultBonus(gen)), def: num(bon.def, defaultBonus(gen)),
-        leth: num(bon.leth, defaultBonus(gen)), hp: num(bon.hp, defaultBonus(gen)),
+        atk: num(bon.atk, defaultBonus(gen, 'atk')), def: num(bon.def, defaultBonus(gen, 'def')),
+        leth: num(bon.leth, defaultBonus(gen, 'leth')), hp: num(bon.hp, defaultBonus(gen, 'hp')),
       };
       const u = o.units[t];
       if (u && u.h && !acc.bonusFull) {
@@ -724,12 +727,17 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     if (!cs.length) return null;
     cs.forEach((x) => { x.score = run(x.units, baseRatio, []).score; });
     cs.sort((a, b) => b.score - a.score);
-    // community floors the model can't see (turrets/front line): garrisons >= 50% infantry, attacks >= 25%; lancers >= 10%
-    const minInf = mode === 'defense' ? 50 : 25;
-    const grid = opts.grid || ratioGrid(minInf, 0, 0, 5);
+    // community floors the model can't see (turrets/front line): garrisons >= 50% infantry, attacks >= 40%
+    // attack: the rallies won in real reports all had ~48-50% infantry and the model under-counts hits on back
+    // rows; lancers die first in real rallies (cap); a formation without marksmen deals too little damage (floor)
+    const minInf = mode === 'defense' ? 50 : RATIO_RULES.attackMinInf;
+    // in defense lancer-heavy garrisons are common (e.g. 60/40/0) and the defender's lancers survived in every
+    // real report: the caps apply to attacks only
+    const sane = (r) => mode === 'defense' || (r.lan <= RATIO_RULES.maxLan && r.mar >= RATIO_RULES.minMar);
+    const grid = opts.grid || ratioGrid(minInf, 0, 0, 5).filter(sane);
     // heroes and ratio interact (Sonya shines with many lancers, Mia with few): give the top hero
     // combos a coarse ratio search before picking the finalists, so no lineup is judged at one ratio only
-    const coarse = opts.grid || ratioGrid(minInf, 0, 0, 5).filter((r) => r.inf % 10 === 0 || r.lan <= 5);
+    const coarse = opts.grid || ratioGrid(minInf, 0, 0, 5).filter((r) => (r.inf % 10 === 0 || r.lan <= 5) && sane(r));
     // candidates: the 8 best lineups plus, for every hero, the best lineup that uses that hero
     const cand = cs.slice(0, 8);
     TYPES.forEach((t) => {
@@ -1205,6 +1213,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     get db() { return DB; },
     setHeroW(w) { HERO_W = w; },
     setSkillMode(m) { SKILL_MODE = m; },
+    setRatioRules(o) { Object.assign(RATIO_RULES, o); },
     setSpread(v, mode) { SPREAD = v; if (mode) SPREAD_MODE = mode; },
   };
 })(typeof window !== 'undefined' ? window : globalThis);
@@ -1212,7 +1221,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
 </script>
 <script>
 /* WOS-TOP BIACHES — app UI (EN). Vanilla JS, no build step needed at runtime. */
-const APP_VERSION = 'v1.7';
+const APP_VERSION = 'v1.9';
 (function () {
   'use strict';
 
