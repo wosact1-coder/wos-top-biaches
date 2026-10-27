@@ -164,6 +164,9 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
   const BEATS = { inf: 'lan', lan: 'mar', mar: 'inf' };
   const K = 0.03;
   let HERO_W = 1;
+  let SPREAD_MODE = 'prop';
+  let SPREAD = 0; // share of hits spread over all alive troop types (calibration in progress)
+  let SKILL_MODE = 'mul'; // hero skill Attack/Defense/Lethality/Health +X%: own multiplier ('mul') or added to the bonus pool ('pool')
   const PIECES = ['goggles', 'gloves', 'belt', 'boots'];
 
   let DB = null;
@@ -345,6 +348,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       // not appear in the report's Stat Bonuses (Sonya -> Philly swap), so the multiplying "special bonus"
       // formula is not confirmed for them
       ['atk', 'def', 'leth', 'hp'].forEach((k) => { if (special[k]) pct[k] += special[k]; });
+      if (SKILL_MODE === 'pool') ['atk', 'def', 'leth', 'hp'].forEach((k) => { pct[k] += sum(k, t); });
 
       const tierNum = parseInt(String(tr.tier || 'T10').slice(1), 10) || 10;
       const fc = /FC(\d+)/.exec(String(tr.tier || '')) ? parseInt(/FC(\d+)/.exec(tr.tier)[1], 10) : 0;
@@ -360,7 +364,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
         base: { atk: base[0], def: base[1], leth: base[2], hp: base[3] },
         pct,
         // hero skill buffs: one multiplier per stat category
-        mul: { atk: 1 + sum('atk', t) / 100, def: 1 + sum('def', t) / 100, leth: 1 + sum('leth', t) / 100, hp: 1 + sum('hp', t) / 100 },
+        mul: SKILL_MODE === 'pool' ? { atk: 1, def: 1, leth: 1, hp: 1 } : { atk: 1 + sum('atk', t) / 100, def: 1 + sum('def', t) / 100, leth: 1 + sum('leth', t) / 100, hp: 1 + sum('hp', t) / 100 },
         dmg: (1 + sum('dmg', t) / 100) * troopDmg,
         red: Math.max(0.5, 1 - sum('red', t) / 100 - troopRed), // damage reduction capped at 50%
         ambush: t === 'lan' && tierNum >= 7,
@@ -414,11 +418,23 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
         // community model: kills scale with sqrt(troops) of each group (diminishing returns)
         const tot = TYPES.reduce((x, t) => x + xn[t], 0);
         const eff = Math.sqrt(xn[g] * tot);
+        // part of every group's hits lands on all alive troop types in proportion to their numbers
+        // (rally reports: lancers and marksmen lose a lot while infantry is still standing)
+        const sp = SPREAD;
+        if (sp > 0) {
+          if (SPREAD_MODE === 'same' && yn[g] > 0) loss[g] += eff * sp * m[g][g];
+          else if (SPREAD_MODE === 'same') loss[target] += eff * sp * m[g][target];
+          else {
+            const ny = alive.reduce((x, t) => x + yn[t], 0);
+            alive.forEach((t) => { loss[t] += eff * sp * m[g][t] * yn[t] / ny; });
+          }
+        }
+        const k = 1 - sp;
         if (Xs.s[g].ambush && target === 'inf' && yn.mar > 0) {
-          loss.inf += eff * m[g].inf * 0.8;
-          loss.mar += eff * m[g].mar * 0.2;
+          loss.inf += eff * k * m[g].inf * 0.8;
+          loss.mar += eff * k * m[g].mar * 0.2;
         } else {
-          loss[target] += eff * m[g][target];
+          loss[target] += eff * k * m[g][target];
         }
       });
       return loss;
@@ -495,7 +511,11 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       const o = account.heroes[name];
       out.push({ h, st: num(o.st, 0), sp: num(o.sp, 0), sw: num(o.sw, 0) });
     });
-    return out;
+    // epic / rare heroes (Patrick, Jessie, Sergey…) are joiners: in the player's own formation they are only
+    // used when no legendary hero of that troop type is available (community: "replaced in the main march by
+    // a developed Legendary"); their 2-skill kits are also not validated by our tests as leaders
+    const leg = out.filter((u) => u.h.r === 'L');
+    return leg.length ? leg : out;
   }
 
   function withGear(unit, account, type, setKey) {
@@ -576,7 +596,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     let metaJoiners = [];
     const given = enemy && enemy.heroes && (enemy.exact || enemy.heroes.some((x) => x && x.n));
     if (!given && !account.isMeta && kind) {
-      const m = metaEnemy(account, kind, side === 'def' ? 'defense' : 'attack');
+      const m = metaEnemy(account, kind, side === 'def' || side === 'soloDef' ? 'defense' : 'attack');
       if (m) { units = m.units; ratio = m.ratio; metaJoiners = m.joiners; }
     }
     // a report lists the enemy exactly: no heroes there means no heroes, not a typical enemy
@@ -612,9 +632,17 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       .map((h) => h.n);
   }
 
-  function pickJoiners(evalFn, pool, count) {
-    const chosen = [];
-    for (let i = 0; i < count; i++) {
+  // joiner combos seen in real rallies / garrisons and in community advice: starting points for the search
+  const JOINER_SEEDS = [
+    ['Jessie', 'Jessie', 'Jessie', 'Jessie'], ['Jessie', 'Jessie', 'Hendrik', 'Norah'], ['Jessie', 'Seo-yoon', 'Patrick', 'Hendrik'],
+    ['Norah', 'Norah', 'Norah', 'Jessie'], ['Jessie', 'Jessie', 'Jessie', 'Mia'], ['Hendrik', 'Logan', 'Fred', 'Norah'],
+    ['Jessie', 'Hendrik', 'Logan', 'Norah'], ['Logan', 'Hendrik', 'Philly', 'Fred'], ['Mia', 'Patrick', 'Patrick', 'Patrick'],
+    ['Patrick', 'Sergey', 'Logan', 'Ahmose'], ['Patrick', 'Logan', 'Norah', 'Hendrik'], ['Norah', 'Norah', 'Norah', 'Patrick'],
+    ['Jessie', 'Jessie', 'Norah', 'Norah'], ['Patrick', 'Patrick', 'Patrick', 'Patrick'],
+  ];
+  function pickJoiners(evalFn, pool, count, seed) {
+    const chosen = seed ? seed.slice(0, count) : [];
+    for (let i = chosen.length; i < count; i++) {
       let best = null;
       let bestScore = -Infinity;
       pool.forEach((n) => {
@@ -624,6 +652,22 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       });
       if (!best) break;
       chosen.push(best);
+    }
+    // greedy picking is myopic (a debuff can be worth more once another is in): improve by swapping
+    // one slot at a time with every pool hero until nothing gets better
+    let cur = evalFn(chosen);
+    for (let pass = 0; pass < 3; pass++) {
+      let improved = false;
+      for (let i = 0; i < chosen.length; i++) {
+        pool.forEach((n) => {
+          if (n === chosen[i]) return;
+          const trial = chosen.slice(); trial[i] = n;
+          if (trial.filter((x) => x === n).length > count) return;
+          const sc = evalFn(trial);
+          if (sc > cur + 1e-9) { cur = sc; chosen[i] = n; improved = true; }
+        });
+      }
+      if (!improved) break;
     }
     const base = evalFn(chosen);
     const alts = pool.filter((n) => chosen.indexOf(n) < 0)
@@ -644,14 +688,17 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     const mode = opts.mode || 'attack';
     const kind = opts.kind || 'rally';
     // defending (garrison or your city against a solo march) gets the "defender" widget skills
-    const side = mode === 'defense' ? 'def' : (kind === 'solo' ? 'solo' : 'rally');
+    // 'def' = garrison / rally defense (widget "Defender Troops" skills active); 'soloDef' = city hit by a single
+    // march: a battle report showed those widget skills in a garrison's Special Bonuses, while a 1 vs 1 self-test
+    // showed none, so in 1 vs 1 they are off
+    const side = mode === 'defense' ? (kind === 'solo' ? 'soloDef' : 'def') : (kind === 'solo' ? 'solo' : 'rally');
     const total = capacity(account, kind);
     const enemyRatio = mode === 'attack' ? { inf: 60, lan: 20, mar: 20 } : { inf: 50, lan: 20, mar: 30 };
     // Without a given enemy, a garrison is typically much bigger than one rally (e.g. 623k vs 183k in a real
     // report): a default target that never dies keeps "max damage" meaningful instead of every lineup tying.
     const given = !!(opts.enemy && opts.enemy.heroes && opts.enemy.heroes.some((h) => h && h.n));
     const enemyTotal = mode === 'attack' && !given ? total * (kind === 'rally' ? GARRISON_FACTOR : 2) : total;
-    const enemy = enemySide(account, opts.enemy, mode === 'attack' ? 'def' : (kind === 'solo' ? 'solo' : 'rally'), enemyTotal, enemyRatio, kind);
+    const enemy = enemySide(account, opts.enemy, mode === 'attack' ? (kind === 'solo' ? 'soloDef' : 'def') : (kind === 'solo' ? 'solo' : 'rally'), enemyTotal, enemyRatio, kind);
     const run = (units, ratio, joiners) => {
       const me = buildSide({ account, units, joiners, ratio, total, side });
       if (mode !== 'attack') return invert(battle(enemy, me));
@@ -679,10 +726,10 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     cs.sort((a, b) => b.score - a.score);
     // community floors the model can't see (turrets/front line): garrisons >= 50% infantry, attacks >= 25%; lancers >= 10%
     const minInf = mode === 'defense' ? 50 : 25;
-    const grid = opts.grid || ratioGrid(minInf, 10, 0, 5);
+    const grid = opts.grid || ratioGrid(minInf, 0, 0, 5);
     // heroes and ratio interact (Sonya shines with many lancers, Mia with few): give the top hero
     // combos a coarse ratio search before picking the finalists, so no lineup is judged at one ratio only
-    const coarse = opts.grid || ratioGrid(minInf, 10, 0, 10);
+    const coarse = opts.grid || ratioGrid(minInf, 0, 0, 5).filter((r) => r.inf % 10 === 0 || r.lan <= 5);
     // candidates: the 8 best lineups plus, for every hero, the best lineup that uses that hero
     const cand = cs.slice(0, 8);
     TYPES.forEach((t) => {
@@ -718,29 +765,77 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       } else fb.total = fb.res.score;
       if (!best || fb.total > best.total) best = fb;
     });
+    // heroes and joiners interact (e.g. Norah helps Gatot/Mia/Bradley but not Hector/Mia/Hendrik): with the
+    // chosen joiners, re-check every lineup at the coarse ratios, then re-pick the joiners; twice
+    if (pool && best.joiners && !opts.joiners) {
+      for (let round = 0; round < 2; round++) {
+        // seeds: the current joiners plus the combos seen in real rallies / community advice
+        const seeds = [best.joiners.chosen].concat(JOINER_SEEDS.filter((js) => js.every((n) => pool.indexOf(n) >= 0)));
+        let top = null;
+        const quick = [40, 50, 60].map((i) => [0, 5, 10].map((l) => ({ inf: Math.max(i, minInf), lan: l, mar: 100 - Math.max(i, minInf) - l }))).flat();
+        seeds.forEach((jl0) => cs.slice(0, 15).forEach((x) => quick.forEach((r) => {
+          const sc = run(x.units, r, jl0).score;
+          if (!top || sc > top.sc) top = { x, r, sc, jl0 };
+        })));
+        const jl0 = top.jl0;
+        let fr = top.r; let fsc = top.sc;
+        grid.filter((r) => Math.abs(r.inf - top.r.inf) <= 10 && Math.abs(r.lan - top.r.lan) <= 10).forEach((r) => {
+          const sc = run(top.x.units, r, jl0).score; if (sc > fsc) { fsc = sc; fr = r; }
+        });
+        const jn = pickJoiners((list) => run(top.x.units, fr, list).score, pool, 4, jl0);
+        if (jn.score <= best.total + 1e-9) break;
+        best = { x: top.x, r: fr, res: run(top.x.units, fr, []), joiners: jn, total: jn.score };
+      }
+    }
     // second best ratio for the same heroes, at least 10 points away
     const others = grid.filter((r) => Math.abs(r.inf - best.r.inf) + Math.abs(r.mar - best.r.mar) >= 10)
       .map((r) => ({ r, res: run(best.x.units, r, []) })).sort((a, b) => b.res.score - a.res.score);
     const second = others[0];
     const joiners = best.joiners || null;
-    const final = run(best.x.units, best.r, joiners ? joiners.chosen : []);
-    const meFinal = buildSide({ account, units: best.x.units, joiners: joiners ? joiners.chosen : [], ratio: best.r, total, side });
-    // close alternatives: swap one hero at a time (same ratio and joiners); within 3% the model can't really tell them apart
-    const closeAlts = [];
     const jl = joiners ? joiners.chosen : [];
+    // try swapping one hero at a time (same joiners); a hero that needs a different ratio (e.g. Sonya with
+    // more lancers) gets its own ratio before judging
+    const trySwaps = (baseC, ref) => {
+      const out = [];
+      TYPES.forEach((t) => {
+        const cur = baseC[t] && baseC[t].h ? baseC[t].h.n : '';
+        rosterUnits(account, t).filter((u) => u.h.sk.length && u.h.n !== cur)
+          .sort((x, y) => unitStrength(y) - unitStrength(x)).slice(0, 6).forEach((u) => {
+            const c = Object.assign({}, baseC); c[t] = u;
+            const units = gearUnits(c, account, setKey);
+            let sc = run(units, best.r, jl).score;
+            let rr = best.r;
+            if (ref !== 0 && (ref - sc) / Math.abs(ref) < 0.15) coarse.forEach((r) => { const v = run(units, r, jl).score; if (v > sc) { sc = v; rr = r; } });
+            out.push({ t, u, c, units, r: rr, sc });
+          });
+      });
+      return out;
+    };
+    // "similar" = within 3% of the score: below the model's error (≈2.7 points on the self-tests)
+    const similar = (ref, sc) => ref !== 0 && (ref - sc) / Math.abs(ref) <= 0.03;
+    // tie-break: between similar heroes prefer the most recent generation (what strong players actually build)
+    const genOf = (u) => (u && u.h && u.h.g) || 0;
+    let curC = Object.assign({}, best.x.c);
+    let curUnits = best.x.units;
+    let curR = best.r;
+    let ref0 = run(curUnits, curR, jl).score;
+    for (let pass = 0; pass < 3; pass++) {
+      // among the candidates similar to the current lineup (and at most 5% below the best one) take the most recent generation
+      const refNow = run(curUnits, curR, jl).score;
+      const pick = trySwaps(curC, refNow).filter((a) => similar(refNow, a.sc) && (ref0 - a.sc) / Math.abs(ref0) <= 0.05 && genOf(a.u) > genOf(curC[a.t]))
+        .sort((x, y) => genOf(y.u) - genOf(x.u) || y.sc - x.sc)[0];
+      if (!pick) break;
+      curC = pick.c; curUnits = pick.units; curR = pick.r;
+    }
+    if (curUnits !== best.x.units) { best.x = Object.assign({}, best.x, { c: curC, units: curUnits }); best.r = curR; }
+    const final = run(best.x.units, best.r, jl);
+    const meFinal = buildSide({ account, units: best.x.units, joiners: jl, ratio: best.r, total, side });
+    // close alternatives (within 3%): shown next to the suggestion
+    const closeAlts = [];
     const ref = final.score;
-    TYPES.forEach((t) => {
-      const cur = best.x.c[t] && best.x.c[t].h ? best.x.c[t].h.n : '';
-      rosterUnits(account, t).filter((u) => u.h.sk.length && u.h.n !== cur)
-        .sort((x, y) => unitStrength(y) - unitStrength(x)).slice(0, 5).forEach((u) => {
-          const c = Object.assign({}, best.x.c); c[t] = u;
-          const units = gearUnits(c, account, setKey);
-          let sc = run(units, best.r, jl).score;
-          // a hero that needs a different ratio (e.g. Sonya with more lancers) gets its own ratio before judging
-          if (ref !== 0 && (ref - sc) / Math.abs(ref) < 0.15) coarse.forEach((r) => { sc = Math.max(sc, run(units, r, jl).score); });
-          const gap = ref !== 0 ? Math.max(0, (ref - sc) / Math.abs(ref)) * 100 : 0;
-          if (gap <= 3) closeAlts.push({ t, n: u.h.n, gap: Math.round(gap * 10) / 10 });
-        });
+    trySwaps(best.x.c, ref).forEach((a) => {
+      const gap = ref !== 0 ? Math.max(0, (ref - a.sc) / Math.abs(ref)) * 100 : 0;
+      if (gap <= 3) closeAlts.push({ t: a.t, n: a.u.h.n, gap: Math.round(gap * 10) / 10 });
     });
     closeAlts.sort((x, y) => x.gap - y.gap);
     return {
@@ -812,7 +907,11 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     const special = { atk: 0, def: 0, leth: 0, hp: 0 };
     TYPES.forEach((t) => {
       const u = units[t];
-      // widget squad skills are not part of the report's Stat Bonuses (self-tests): nothing to remove
+      // widget squad skills ("Rally / Defender Troops +X%") are listed in a rally / garrison report's Special
+      // Bonuses and included in its Stat Bonuses (Mia SW 9 → Rally Troops' Attack +12.5%, Gatot SW 10 → Defender
+      // Troops' Defense +15%); in 1 vs 1 they don't apply
+      if (side !== 'rally' && side !== 'def') return;
+      if (u && u.h.sw && u.h.sw.b && u.h.sw.b.side === side && special[u.h.sw.b.c] !== undefined) special[u.h.sw.b.c] += swSkillValue(num(u.sw, 0));
     });
     TYPES.forEach((t) => {
       out[t] = {};
@@ -820,8 +919,8 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       ['atk', 'def', 'leth', 'hp'].forEach((k) => {
         const v = reportBonus[t] && reportBonus[t][k];
         if (v === '' || v == null) return;
-        const sp = special[k] + num(gem && gem[k], 0);
-        let base = (num(v, 0) - sp) / (1 + sp / 100);
+        const g = num(gem && gem[k], 0);
+        let base = (num(v, 0) - g) / (1 + g / 100) - special[k];
         if (u) {
           const sf = starFactor(u.st, u.sp);
           if (k === 'atk') base -= HERO_W * (u.h.ea || 0) * sf;
@@ -1089,12 +1188,12 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
       return out;
     };
     const myAcc = { gen: account.gen, troops: tiers(report.myTier), bonus: hasMy ? report.myBonus : account.bonus, bonusFull: hasMy };
-    const mySide = !attacking ? 'def' : (kind === 'solo' ? 'solo' : 'rally');
+    const mySide = !attacking ? (kind === 'solo' ? 'soloDef' : 'def') : (kind === 'solo' ? 'solo' : 'rally');
     const myRatio = normRatio(report.myRatio, attacking ? { inf: 50, lan: 20, mar: 30 } : { inf: 60, lan: 20, mar: 20 });
     const enRatio = normRatio(report.enRatio, attacking ? { inf: 60, lan: 20, mar: 20 } : { inf: 50, lan: 20, mar: 30 });
     const me = buildSide({ account: myAcc, units, joiners: report.myJoiners || [], ratio: myRatio, total: myTotal, side: mySide });
     const en = enemySide(account, { heroes: (report.enemyHeroes || []).map((n) => ({ n })), ratio: enRatio, total: enTotal, bonus: report.enBonus, joiners: report.enJoiners || [], exact: true, troops: tiers(report.enTier) },
-      attacking ? 'def' : (kind === 'solo' ? 'solo' : 'rally'), enTotal, enRatio);
+      attacking ? (kind === 'solo' ? 'soloDef' : 'def') : (kind === 'solo' ? 'solo' : 'rally'), enTotal, enRatio);
     const r = attacking ? battle(me, en) : invert(battle(en, me));
     return { win: r.win, myLeft: Math.round(r.remA * 100), enemyLeft: Math.round(r.remB * 100) };
   }
@@ -1105,13 +1204,15 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     gearPiece, skillLevel, starFactor, unitStrength, activityScores, joinerPool, powerIndex,
     get db() { return DB; },
     setHeroW(w) { HERO_W = w; },
+    setSkillMode(m) { SKILL_MODE = m; },
+    setSpread(v, mode) { SPREAD = v; if (mode) SPREAD_MODE = mode; },
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
 <script>
 /* WOS-TOP BIACHES — app UI (EN). Vanilla JS, no build step needed at runtime. */
-const APP_VERSION = 'v1.2';
+const APP_VERSION = 'v1.7';
 (function () {
   'use strict';
 
@@ -2352,7 +2453,7 @@ const APP_VERSION = 'v1.2';
   function useReport(r) {
     // 1) my base bonuses (only for my own report)
     if (r.mine && filledBonus(r.myBonus)) {
-      const side = r.role === 'defender' ? 'def' : (r.type === 'solo' ? 'solo' : 'rally');
+      const side = r.role === 'defender' ? (r.type === 'solo' ? 'soloDef' : 'def') : (r.type === 'solo' ? 'solo' : 'rally');
       const base = WOS.reportToBase(account(), r.my, side, r.myBonus, r.buffs.my);
       TYPES.forEach((t) => Object.keys(base[t]).forEach((k) => { S.profile.bonus[t][k] = String(base[t][k]); }));
     }
