@@ -136,6 +136,9 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
 @keyframes flashin { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: none; } }
 #r-result.need .pill { border-color: #DC2626; box-shadow: 0 0 0 2px rgba(220,38,38,.45); }
 
+.brand-name .ver { font-family: Inter, system-ui, sans-serif; font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0; margin-left: 2px; }
+.in.masked { -webkit-text-security: disc; text-security: disc; }
+
 </style>
 </head>
 <body>
@@ -545,10 +548,30 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     return u;
   }
 
-  function enemySide(account, enemy, side, total, fallbackRatio) {
+  // Default opponent when none is entered: the META formation of the player's generation
+  // (best heroes of that gen at 5★, special weapon 10, max hero gear, with its own best ratio and joiners),
+  // so suggestions are prepared for the strongest enemy. Cached per gen / event / role.
+  const META_ENEMY = {};
+  function metaEnemy(account, kind, enemyMode) {
+    const gen = account.gen || 1;
+    const key = [gen, kind, enemyMode, JSON.stringify(account.troops || {}), JSON.stringify(account.bonus || {})].join('|');
+    if (!(key in META_ENEMY)) {
+      const r = optimizeBattle(metaAccount(account), { mode: enemyMode, kind });
+      META_ENEMY[key] = r ? { units: r.units, ratio: r.ratio, joiners: kind === 'rally' && r.joiners ? (Array.isArray(r.joiners) ? r.joiners : (r.joiners.chosen || [])) : [] } : null;
+    }
+    return META_ENEMY[key];
+  }
+
+  function enemySide(account, enemy, side, total, fallbackRatio, kind) {
     const gen = account.gen || 1;
     let units = genericEnemyUnits(gen, !!account.isMeta);
     let ratio = fallbackRatio;
+    let metaJoiners = [];
+    const given = enemy && enemy.heroes && (enemy.exact || enemy.heroes.some((x) => x && x.n));
+    if (!given && !account.isMeta && kind) {
+      const m = metaEnemy(account, kind, side === 'def' ? 'defense' : 'attack');
+      if (m) { units = m.units; ratio = m.ratio; metaJoiners = m.joiners; }
+    }
     // a report lists the enemy exactly: no heroes there means no heroes, not a typical enemy
     if (enemy && enemy.heroes && (enemy.exact || enemy.heroes.some((x) => x && x.n))) {
       units = { inf: null, lan: null, mar: null };
@@ -565,7 +588,8 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     const eb = enemy && enemy.bonus;
     const hasBonus = !!eb && TYPES.some((t) => eb[t] && ['atk', 'def', 'leth', 'hp'].some((k) => eb[t][k] !== '' && eb[t][k] != null));
     const enemyAcc = { gen, troops: (enemy && enemy.troops) || account.troops, bonus: hasBonus ? eb : account.bonus, bonusFull: hasBonus };
-    return buildSide({ account: enemyAcc, units, joiners: (enemy && enemy.joiners) || [], ratio, total: num(enemy && enemy.total, total), side });
+    const joiners = enemy && enemy.joiners && enemy.joiners.length ? enemy.joiners : metaJoiners;
+    return buildSide({ account: enemyAcc, units, joiners, ratio, total: num(enemy && enemy.total, total), side });
   }
 
   /* ---------- optimizers ---------- */
@@ -618,7 +642,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
     // report): a default target that never dies keeps "max damage" meaningful instead of every lineup tying.
     const given = !!(opts.enemy && opts.enemy.heroes && opts.enemy.heroes.some((h) => h && h.n));
     const enemyTotal = mode === 'attack' && !given ? total * (kind === 'rally' ? GARRISON_FACTOR : 2) : total;
-    const enemy = enemySide(account, opts.enemy, mode === 'attack' ? 'def' : 'rally', enemyTotal, enemyRatio);
+    const enemy = enemySide(account, opts.enemy, mode === 'attack' ? 'def' : (kind === 'solo' ? 'solo' : 'rally'), enemyTotal, enemyRatio, kind);
     const run = (units, ratio, joiners) => {
       const me = buildSide({ account, units, joiners, ratio, total, side });
       if (mode !== 'attack') return invert(battle(enemy, me));
@@ -1075,6 +1099,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
 </script>
 <script>
 /* WOS-TOP BIACHES — app UI (EN). Vanilla JS, no build step needed at runtime. */
+const APP_VERSION = 'v1.1';
 (function () {
   'use strict';
 
@@ -1435,7 +1460,7 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
 
   function header() {
     const sub = S.session ? `${esc(S.session.user)}${S.session.state ? ' · ' + tx('State') + ' ' + esc(S.session.state) : ''}${S.session.alliance ? ' [' + esc(S.session.alliance) + ']' : ''}` : 'Formation Lab';
-    return `<header class="top"><div class="brand"><div class="logo-sm">${logoSvg(36)}</div><div style="min-width:0"><div class="brand-name">WOS-TOP <span>BIACHES</span></div><div class="brand-sub">${sub}</div></div></div>
+    return `<header class="top"><div class="brand"><div class="logo-sm">${logoSvg(36)}</div><div style="min-width:0"><div class="brand-name">WOS-TOP <span>BIACHES</span> <small class="ver">${APP_VERSION}</small></div><div class="brand-sub">${sub}</div></div></div>
       <div class="row"><select class="chip lang-sel" data-lang aria-label="Language">${LANGS.map(([k, l]) => `<option value="${k}"${LANG === k ? ' selected' : ''}>${l}</option>`).join('')}</select>${S.session ? `<button class="chip chip-btn icon-btn" data-act="logout" title="${tx('Log out')}" aria-label="${tx('Log out')}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>` : ''}</div></header>`;
   }
   // Role column may hold R5, Super or both ("R5, Super")
@@ -1458,11 +1483,11 @@ nav.bottom.six button { font-size: 10px; letter-spacing: -0.01em; }
         <div style="width:150px;height:150px;border-radius:50%;background:#0F1A30;border:4px solid var(--ice);box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--ember);overflow:hidden;display:flex;align-items:center;justify-content:center">${logoSvg(140)}</div>
         <div class="h-font" style="font-size:36px;line-height:1">WOS-TOP</div>
         <div class="h-font" style="font-size:28px;line-height:1;color:var(--ember);letter-spacing:.24em">BIACHES</div>
-        <div class="small">Formation Lab · ${tx('unofficial fan tool')}</div>
+        <div class="small">Formation Lab · ${tx('unofficial fan tool')} · ${APP_VERSION}</div>
       </div>
       <form id="login-form" style="display:flex;flex-direction:column;gap:14px">
         <div class="field"><label for="lu">${tx('USERNAME')}</label><input id="lu" class="in big" autocomplete="username" required></div>
-        <div class="field"><label for="lc">${tx('ACCESS CODE')}</label><input id="lc" class="in big" type="password" autocomplete="current-password" required></div>
+        <div class="field"><label for="lc">${tx('ACCESS CODE')}</label><input id="lc" class="in big masked" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required></div>
         ${err ? `<div class="err" role="alert">${esc(tx(err))}</div>` : ''}
         <button class="btn" type="submit" id="login-btn">${tx('LOG IN')}</button>
         <div class="small" style="text-align:center">${tx('Invite only. Lost your code? Ask whoever gave you access.')}</div>
