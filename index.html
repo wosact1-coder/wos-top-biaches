@@ -280,6 +280,32 @@ button.card { font: inherit; }
 
   /* ---------- effects ---------- */
 
+  // Skills that hit one enemy troop type at full value (whiteoutsurvival.wiki hero pages, linked from the game)
+  // instead of a DB average over all types. vs = enemy troop types hit. Values at skill level 5, linear per level.
+  const VS_SKILLS = {
+    'Power Shot': [{ c: 'dmg', to: 'all', v5: 30, vs: ['lan'] }, { c: 'dmg', to: 'all', v5: 25, vs: ['inf'] }],
+    'Roundabout Hit': [{ c: 'dmg', to: 'mar', v5: 40, vs: ['lan'] }, { c: 'dmg', to: 'mar', v5: 20, vs: ['mar'] }],
+    'Crimson Sniper': [{ c: 'dmg', to: 'mar', v5: 40, vs: ['lan'] }, { c: 'dmg', to: 'mar', v5: 20, vs: ['mar'] }],
+    "Witch's Wrath": [{ c: 'dmg', to: 'mar', v5: 40, vs: ['lan'] }, { c: 'dmg', to: 'mar', v5: 20, vs: ['mar'] }],
+    'Trajectoids': [{ c: 'dmg', to: 'mar', v5: 60, vs: ['mar'] }],
+    'Toxic Release': [{ c: 'etaken', to: 'all', v5: 30, vs: ['inf'] }, { c: 'red', to: 'all', v5: 7.5 }],
+    'Raging Force': [{ c: 'etaken', to: 'all', v5: 30, vs: ['inf'] }, { c: 'red', to: 'all', v5: 7.5 }],
+    'Confusion Pollen': [{ c: 'etaken', to: 'all', v5: 30, vs: ['inf'] }, { c: 'red', to: 'all', v5: 7.5 }],
+    "Night's Defense": [{ c: 'eatk', to: 'all', v5: 35, vs: ['mar', 'lan'] }, { c: 'atk', to: 'inf', v5: -20 }],
+    'Acidification': [{ c: 'etaken', to: 'all', v5: 10, vs: ['inf'] }],
+  };
+  // Hector's Rampant starts full and loses 15% at every attack, for 10 attacks (wiki): a decaying damage buff
+  // ('rdmg'). Lab test on 7 real battles: error 33.6 -> 16.0 points, Doryus' winner fixed.
+  const RAMP_K = 0.85;
+  const RAMP_N = 10;
+  const RAMP_AVG = (1 - Math.pow(RAMP_K, RAMP_N)) / (1 - RAMP_K) / RAMP_N; // ~0.54, for one-shot estimates
+  function skillOverride(s, lvl) {
+    if (s.nm === 'Rampant') return [{ c: 'rdmg', to: s.to, v: s.v[lvl - 1], nm: s.nm }].concat((s.ex || []).map((e) => ({ c: 'rdmg', to: e.to, v: e.v[lvl - 1], nm: s.nm + '+' })));
+    const o = VS_SKILLS[s.nm];
+    if (!o) return null;
+    return o.map((e) => ({ c: e.c, to: e.to, v: e.v5 * lvl / 5 * s.u, vs: e.vs, nm: s.nm }));
+  }
+
   // A "unit" is a hero used in a formation: {h: dbHero, st, sp, sw, gear}
   function leaderEffects(units) {
     const eff = [];
@@ -288,6 +314,8 @@ button.card { font: inherit; }
       const lvl = skillLevel(u.st);
       u.h.sk.forEach((s) => {
         if (!slotUnlocked(s.s, u.st)) return;
+        const ov = skillOverride(s, lvl);
+        if (ov) { ov.forEach((e) => eff.push(e)); return; }
         eff.push({ c: s.c, to: s.to, v: s.v[lvl - 1] * s.u, nm: s.nm, ch: s.ch || s.u < 1 });
         (s.ex || []).forEach((e) => eff.push({ c: e.c, to: e.to, v: e.v[lvl - 1] * s.u, nm: s.nm + '+', ch: false }));
       });
@@ -311,6 +339,8 @@ button.card { font: inherit; }
         if (seenChance[s.nm]) return;
         seenChance[s.nm] = true;
       }
+      const ov = skillOverride(s, 5);
+      if (ov) { ov.forEach((e) => eff.push(Object.assign({ ch: isChance }, e))); return; }
       eff.push({ c: s.c, to: s.to, v: s.v[4] * s.u, nm: s.nm, ch: isChance });
       // second effects of the same skill (e.g. Norah: damage dealt AND damage taken for infantry + marksmen)
       (s.ex || []).forEach((e) => eff.push({ c: e.c, to: e.to, v: e.v[4] * s.u, nm: s.nm + '+', ch: isChance }));
@@ -331,8 +361,10 @@ button.card { font: inherit; }
     const s = {};
     const n = {};
     const eff = leaderEffects(TYPES.map((t) => o.units[t])).concat(joinerEffects(o.joiners || []));
-    const sum = (c, t) => eff.filter((e) => e.c === c && (e.to === 'all' || e.to === t)).reduce((a, e) => a + e.v, 0);
-    const sumAll = (c) => eff.filter((e) => e.c === c).reduce((a, e) => a + e.v, 0);
+    const sum = (c, t) => eff.filter((e) => !e.vs && e.c === c && (e.to === 'all' || e.to === t)).reduce((a, e) => a + e.v, 0);
+    const sumAll = (c) => eff.filter((e) => !e.vs && e.c === c).reduce((a, e) => a + e.v, 0);
+    // effects on one enemy troop type only (VS_SKILLS)
+    const sumVs = (c, t, tg) => eff.filter((e) => e.vs && e.c === c && (e.to === 'all' || e.to === t) && e.vs.indexOf(tg) >= 0).reduce((a, e) => a + e.v, 0);
 
     // special weapon (widget) skills: "Rally / Defender troops X +n%" for every troop type of the matching side.
     // They are special bonuses (multiply the bonus pool); a report's Stat Bonuses already contain them.
@@ -391,7 +423,11 @@ button.card { font: inherit; }
         pct,
         // hero skill buffs: one multiplier per stat category
         mul: SKILL_MODE === 'pool' ? { atk: 1, def: 1, leth: 1, hp: 1 } : { atk: 1 + sum('atk', t) / 100, def: 1 + sum('def', t) / 100, leth: 1 + sum('leth', t) / 100, hp: 1 + sum('hp', t) / 100 },
-        dmg: (1 + sum('dmg', t) / 100) * troopDmg,
+        // dmg: average multiplier (decaying Rampant at its average) for one-shot uses (Bear, power index);
+        // battle() uses dmgBase + rdmg per round and dmgVs per target type
+        dmg: (1 + (sum('dmg', t) + sum('rdmg', t) * RAMP_AVG) / 100) * troopDmg,
+        dmgBase: sum('dmg', t), rdmg: sum('rdmg', t), troopDmg,
+        dmgVs: { inf: sumVs('dmg', t, 'inf'), lan: sumVs('dmg', t, 'lan'), mar: sumVs('dmg', t, 'mar') },
         red: Math.max(0.5, 1 - sum('red', t) / 100 - troopRed), // damage reduction capped at 50%
         ambush: t === 'lan' && tierNum >= 7,
       };
@@ -401,6 +437,7 @@ button.card { font: inherit; }
       s, n,
       // debuffs this side puts on the enemy: multipliers on the enemy's stat (1 - x)
       // capped like damage reduction: debuffs from different heroes add up, but not without limit
+      debuffVs: { eatk: { inf: sumVs('eatk', 'all', 'inf'), lan: sumVs('eatk', 'all', 'lan'), mar: sumVs('eatk', 'all', 'mar') }, etaken: { inf: sumVs('etaken', 'all', 'inf') / 100, lan: sumVs('etaken', 'all', 'lan') / 100, mar: sumVs('etaken', 'all', 'mar') / 100 } },
       debuff: { eatk: Math.min(50, sumAll('eatk')), edef: Math.min(50, sumAll('edef')), eleth: Math.min(50, sumAll('eleth')), etaken: Math.min(100, sumAll('etaken')) / 100 },
     };
   }
@@ -409,6 +446,21 @@ button.card { font: inherit; }
 
   function stat(x, k, debuffPct) {
     return x.base[k] * Math.max(0.1, 1 + x.pct[k] / 100) * (x.mul ? x.mul[k] : 1) * Math.max(0.1, 1 - (debuffPct || 0) / 100);
+  }
+
+  const vsOf = (o, k, t) => (o && o[k] && o[k][t]) || 0;
+  // decaying Rampant: extra damage at round r = rdmg * 0.85^r for the first 10 attacks
+  function rampMods(X, m, round) {
+    if (!TYPES.some((g) => X.s[g].rdmg)) return m;
+    const d = round < RAMP_N ? Math.pow(RAMP_K, round) : 0;
+    const o = {};
+    TYPES.forEach((g) => {
+      const b = X.s[g];
+      const f = (1 + (b.dmgBase + b.rdmg * d) / 100) / (1 + b.dmgBase / 100);
+      o[g] = {};
+      TYPES.forEach((t) => { o[g][t] = m[g][t] * f; });
+    });
+    return o;
   }
 
   function battle(A, B, maxRounds) {
@@ -422,12 +474,14 @@ button.card { font: inherit; }
       TYPES.forEach((g) => {
         m[g] = {};
         TYPES.forEach((t) => {
-          const atk = stat(X.s[g], 'atk', Y.debuff.eatk);
+          const atk = stat(X.s[g], 'atk', Y.debuff.eatk + vsOf(Y.debuffVs, 'eatk', g));
           const leth = stat(X.s[g], 'leth', Y.debuff.eleth);
           const def = stat(Y.s[t], 'def', X.debuff.edef);
           const hp = stat(Y.s[t], 'hp', 0);
           const counter = BEATS[g] === t ? 1.1 : 1;
-          m[g][t] = K * (atk * leth) / (def * hp) * counter * X.s[g].dmg * Y.s[t].red * (1 + X.debuff.etaken);
+          // damage multiplier without the decaying part (applied per round below) plus the vs-type skills
+          const dm = (1 + (X.s[g].dmgBase + ((X.s[g].dmgVs || {})[t] || 0)) / 100) * X.s[g].troopDmg;
+          m[g][t] = K * (atk * leth) / (def * hp) * counter * dm * Y.s[t].red * (1 + X.debuff.etaken + vsOf(X.debuffVs, 'etaken', t));
         });
       });
       return m;
@@ -470,8 +524,8 @@ button.card { font: inherit; }
       const sa = TYPES.reduce((x, t) => x + na[t], 0);
       const sb = TYPES.reduce((x, t) => x + nb[t], 0);
       if (sa <= 0.5 || sb <= 0.5) break;
-      const lb = hit(A, na, nb, mAB);
-      const la = hit(B, nb, na, mBA);
+      const lb = hit(A, na, nb, rampMods(A, mAB, rounds));
+      const la = hit(B, nb, na, rampMods(B, mBA, rounds));
       TYPES.forEach((t) => { na[t] = Math.max(0, na[t] - la[t]); nb[t] = Math.max(0, nb[t] - lb[t]); });
     }
     const ra = TYPES.reduce((x, t) => x + na[t], 0);
@@ -666,6 +720,63 @@ button.card { font: inherit; }
     ['Patrick', 'Sergey', 'Logan', 'Ahmose'], ['Patrick', 'Logan', 'Norah', 'Hendrik'], ['Norah', 'Norah', 'Norah', 'Patrick'],
     ['Jessie', 'Jessie', 'Norah', 'Norah'], ['Patrick', 'Patrick', 'Patrick', 'Patrick'],
   ];
+  // Community joiner sets (Nov 2026). The free search over all first skills picked enemy debuffs (Hendrik,
+  // Logan, Fred, Freya) almost everywhere, against every guide and every real rally we saw: until controlled
+  // tests measure debuffs, the joiners are chosen ONLY among the combos the community uses, and the model just
+  // picks which of them fits the captain's heroes and ratio.
+  // Attack: Jessie / Jasser / Jeronimo (damage dealt +25%) and Seo-yoon (Troops Attack +25%); damage and attack
+  // are different multipliers, so 2 + 2 beats 4 of one kind (whiteoutsurvival.wiki Bear guide). Norah (damage
+  // +15% and damage taken -15% for infantry and marksmen) fits formations with few lancers. Lethality joiners
+  // (Blanchette, Hervor, Hank, Bertha) are a third multiplier from Gen 10.
+  // Defense: Patrick (Health +25%) first, Sergey (damage taken -20%) second (Bahiti / Lumak Bokan are the same
+  // effect); Norah again for infantry + marksmen garrisons. Guides say "do not send other heroes" to a garrison:
+  // offensive joiners are kept out of the defense sets even where the model would like them.
+  const DMG_J = ['Jessie', 'Jasser', 'Jeronimo'];
+  const RED_J = ['Sergey', 'Bahiti', 'Lumak Bokan'];
+  const LETH_J = ['Blanchette', 'Hervor', 'Hank', 'Bertha'];
+  const ATK_J = ['Seo-yoon', 'Bradley', 'Magnus', 'Rufus', 'Viveca'];
+  function availableJ(list, gen) { return list.filter((n) => { const h = hero(n); return h && (h.r !== 'L' || h.g <= gen); }); }
+  function communityJoinerSets(mode, gen) {
+    const lethJ = availableJ(LETH_J, gen);
+    if (mode === 'attack') {
+      const sets = [
+        { k: 'dmg4', j: ['D', 'D', 'D', 'D'] },
+        { k: 'dmg2atk2', j: ['D', 'D', 'Seo-yoon', 'Seo-yoon'] },
+        { k: 'dmg3atk1', j: ['D', 'D', 'D', 'Seo-yoon'] },
+        { k: 'dmg2atk1norah', j: ['D', 'D', 'Seo-yoon', 'Norah'] },
+        { k: 'dmg2norah2', j: ['D', 'D', 'Norah', 'Norah'] },
+        { k: 'norah3dmg1', j: ['Norah', 'Norah', 'Norah', 'D'] },
+      ];
+      // mixed set seen in community advice: Norah + Patrick with Jessie + Seo-yoon (attack that must also survive)
+      sets.push({ k: 'mixNorahPatrick', j: ['D', 'Seo-yoon', 'Norah', 'Patrick'] });
+      if (lethJ.length) sets.push({ k: 'dmg2atk1leth1', j: ['D', 'D', 'Seo-yoon', lethJ[lethJ.length - 1]] });
+      return sets;
+    }
+    return [
+      { k: 'hp2red2', j: ['Patrick', 'Patrick', 'R', 'R'] },
+      { k: 'hp4', j: ['Patrick', 'Patrick', 'Patrick', 'Patrick'] },
+      { k: 'hp3red1', j: ['Patrick', 'Patrick', 'Patrick', 'R'] },
+      { k: 'hp2red1norah', j: ['Patrick', 'Patrick', 'R', 'Norah'] },
+      { k: 'hp1red1norah2', j: ['Patrick', 'R', 'Norah', 'Norah'] },
+      { k: 'norah3hp1', j: ['Norah', 'Norah', 'Norah', 'Patrick'] },
+    ];
+  }
+  // display names: equivalent joiners spread over the heroes players actually have (Jessie, Jasser, Jeronimo…)
+  function namedJoiners(j) {
+    let d = 0; let r = 0;
+    return j.map((x) => (x === 'D' ? DMG_J[d++ % DMG_J.length] : (x === 'R' ? RED_J[r++ % RED_J.length] : x)));
+  }
+  function simJoiners(j) { return j.map((x) => (x === 'D' ? 'Jessie' : (x === 'R' ? 'Sergey' : x))); }
+  function pickCommunityJoiners(evalFn, mode, gen) {
+    const sets = communityJoinerSets(mode, gen).map((st) => ({ st, sc: evalFn(simJoiners(st.j)) })).sort((a, b) => b.sc - a.sc);
+    const top = sets[0];
+    const chosen = namedJoiners(top.st.j);
+    const alts = mode === 'attack'
+      ? ['Jasser', 'Jeronimo', 'Seo-yoon', 'Norah'].concat(availableJ(ATK_J.slice(1), gen)).filter((n) => chosen.indexOf(n) < 0).slice(0, 2)
+      : ['Sergey', 'Bahiti', 'Lumak Bokan', 'Norah'].filter((n) => chosen.indexOf(n) < 0).slice(0, 2);
+    return { chosen, alts, score: top.sc, set: top.st.k, community: true };
+  }
+
   function pickJoiners(evalFn, pool, count, seed) {
     const chosen = seed ? seed.slice(0, count) : [];
     for (let i = chosen.length; i < count; i++) {
@@ -791,14 +902,18 @@ button.card { font: inherit; }
         fb.joiners = { chosen: opts.joiners.slice(0, 4), alts: [], score: run(x.units, fb.r, opts.joiners.slice(0, 4)).score };
         fb.total = fb.joiners.score;
       } else if (pool) {
-        fb.joiners = pickJoiners((list) => run(x.units, fb.r, list).score, pool, 4);
+        // community joiner sets; the ratio is re-checked with each set (Norah wants few lancers)
+        grid.filter((r) => Math.abs(r.inf - x.r0.inf) <= 10 && Math.abs(r.lan - x.r0.lan) <= 10).forEach((r) => {
+          const jn = pickCommunityJoiners((list) => run(x.units, r, list).score, mode, gen);
+          if (!fb.joiners || jn.score > fb.joiners.score) { fb.joiners = jn; fb.r = r; fb.res = run(x.units, r, []); }
+        });
         fb.total = fb.joiners.score;
       } else fb.total = fb.res.score;
       if (!best || fb.total > best.total) best = fb;
     });
     // heroes and joiners interact (e.g. Norah helps Gatot/Mia/Bradley but not Hector/Mia/Hendrik): with the
     // chosen joiners, re-check every lineup at the coarse ratios, then re-pick the joiners; twice
-    if (pool && best.joiners && !opts.joiners) {
+    if (pool && best.joiners && !opts.joiners && !best.joiners.community) {
       for (let round = 0; round < 2; round++) {
         // seeds: the current joiners plus the combos seen in real rallies / community advice
         const seeds = [best.joiners.chosen].concat(JOINER_SEEDS.filter((js) => js.every((n) => pool.indexOf(n) >= 0)));
@@ -905,8 +1020,8 @@ button.card { font: inherit; }
     // verified), our simulation inside each tier. Chance skills (Mia, Alonso…) are left out: "don't send Mia",
     // a second copy in the same rally is wasted and nobody controls who joins.
     const BEAR_TIERS = [
-      ['Jessie', 'Jasser', 'Jeronimo'],
-      ['Seo-yoon', 'Bradley', 'Magnus', 'Blanchette', 'Rufus', 'Hervor', 'Dominic', 'Hank', 'Viveca', 'Aisling', 'Bertha'],
+      ['Jessie', 'Jasser', 'Jeronimo', 'Seo-yoon'],
+      ['Bradley', 'Magnus', 'Blanchette', 'Rufus', 'Hervor', 'Dominic', 'Hank', 'Viveca', 'Aisling', 'Bertha'],
       ['Hendrik', 'Reina', 'Ligeia', 'Eleanor'],
     ];
     const tierOf = (n) => { const i = BEAR_TIERS.findIndex((t) => t.indexOf(n) >= 0); return i < 0 ? 3 : i; };
@@ -933,7 +1048,18 @@ button.card { font: inherit; }
   }
 
   // Joiner value by simulation: the hero's 1st skill alone added to a standard rally / garrison of this account
+  // joiner heroes a player should send, community order (see communityJoinerSets); skill level breaks no tie:
+  // the game keeps the 4 highest skill levels, so a low-level hero is flagged by the app, not reordered here
+  const JOIN_ORDER = {
+    att: ['Jessie', 'Jasser', 'Jeronimo', 'Seo-yoon', 'Norah', 'Blanchette', 'Hervor', 'Hank', 'Bertha', 'Bradley', 'Magnus', 'Rufus', 'Viveca'],
+    def: ['Patrick', 'Sergey', 'Bahiti', 'Lumak Bokan', 'Norah', 'Ling Xue'],
+  };
   function rankJoiners(account, kind) {
+    const order = JOIN_ORDER[kind === 'def' ? 'def' : 'att'];
+    const owned = Object.keys(account.heroes || {});
+    return order.filter((n) => owned.indexOf(n) >= 0 && hero(n)).map((n, i) => ({ n, v: order.length - i }));
+  }
+  function rankJoinersModel(account, kind) {
     const owned = Object.keys(account.heroes || {}).filter((n) => { const h = hero(n); return h && h.sk.length; });
     const pool = joinerPool(account.gen || 1, kind === 'def' ? 'def' : 'att');
     const cand = owned.filter((n) => pool.indexOf(n) >= 0);
@@ -1335,7 +1461,7 @@ button.card { font: inherit; }
 </script>
 <script>
 /* WOS-TOP BIACHES — app UI (EN). Vanilla JS, no build step needed at runtime. */
-const APP_VERSION = 'v1.13';
+const APP_VERSION = 'v1.14';
 (function () {
   'use strict';
 
