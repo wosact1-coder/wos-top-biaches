@@ -315,6 +315,7 @@ button.card { font: inherit; }
   };
   // Hector's Rampant starts full and loses 15% at every attack, for 10 attacks (wiki): a decaying damage buff
   // ('rdmg'). Lab test on 7 real battles: error 33.6 -> 16.0 points, Doryus' winner fixed.
+  const DEBUFF_W = 0.8;
   const RAMP_K = 0.85;
   const RAMP_N = 10;
   const RAMP_AVG = (1 - Math.pow(RAMP_K, RAMP_N)) / (1 - RAMP_K) / RAMP_N; // ~0.54, for one-shot estimates
@@ -457,7 +458,9 @@ button.card { font: inherit; }
       // debuffs this side puts on the enemy: multipliers on the enemy's stat (1 - x)
       // capped like damage reduction: debuffs from different heroes add up, but not without limit
       debuffVs: { eatk: { inf: sumVs('eatk', 'all', 'inf'), lan: sumVs('eatk', 'all', 'lan'), mar: sumVs('eatk', 'all', 'mar') }, etaken: { inf: sumVs('etaken', 'all', 'inf') / 100, lan: sumVs('etaken', 'all', 'lan') / 100, mar: sumVs('etaken', 'all', 'mar') / 100 } },
-      debuff: { eatk: Math.min(50, sumAll('eatk')), edef: Math.min(50, sumAll('edef')), eleth: Math.min(50, sumAll('eleth')), etaken: Math.min(100, sumAll('etaken')) / 100 },
+      // enemy attack / defense / lethality debuffs at 80%: controlled tests (4/11) found Hendrik + Logan + Ling Xue +
+      // Gwen ~4% below 4 Jessie, the full value put them 11% above
+      debuff: { eatk: Math.min(50, sumAll('eatk')) * DEBUFF_W, edef: Math.min(50, sumAll('edef')) * DEBUFF_W, eleth: Math.min(50, sumAll('eleth')) * DEBUFF_W, etaken: Math.min(100, sumAll('etaken')) / 100 },
     };
   }
 
@@ -488,6 +491,7 @@ button.card { font: inherit; }
     const nb = Object.assign({}, B.n);
     const NA = TYPES.reduce((x, t) => x + na[t], 0);
     const NB = TYPES.reduce((x, t) => x + nb[t], 0);
+    const MIN0 = Math.max(1, Math.min(NA, NB));
     const mods = (X, Y) => {
       const m = {};
       TYPES.forEach((g) => {
@@ -516,7 +520,9 @@ button.card { font: inherit; }
         const target = alive[0];
         // community model: kills scale with sqrt(troops) of each group (diminishing returns)
         const tot = TYPES.reduce((x, t) => x + xn[t], 0);
-        const eff = Math.sqrt(xn[g] * tot);
+        // the other factor is halfway (geometric mean) between the group's own army and the smaller army at the
+        // start: controlled tests (4/11, 4,200 vs 6,000) showed the bigger side has less edge than sqrt(n x own total)
+        const eff = Math.sqrt(xn[g]) * Math.sqrt(Math.sqrt(MIN0 * tot));
         // part of every group's hits lands on all alive troop types in proportion to their numbers
         // (rally reports: lancers and marksmen lose a lot while infantry is still standing)
         const sp = SPREAD;
@@ -911,7 +917,29 @@ button.card { font: inherit; }
     // lineup wins, e.g. defensive joiners favour Sonya over Mia in a garrison
     const pool = kind === 'rally' ? joinerPool(gen, mode === 'attack' ? 'att' : 'def') : null;
     let best = null;
-    finalists.forEach((x) => {
+    if (pool && !opts.joiners) {
+      // Joint search (Nov 2026): every candidate lineup x every community joiner set on the coarse grid, then a
+      // fine ratio search for the best 6 (lineup, set) pairs. Picking the joiners after the lineup missed the best
+      // garrison in 4 of 12 profile tests (e.g. 2 Patrick + Sergey + Norah needs Gatot/Sonya at 65/20/15); this
+      // search matched an exhaustive one (all lineups x sets x full grid) in 12 of 12, at ~3-4x the time
+      const sets = communityJoinerSets(mode, gen).map((st) => ({ st, list: simJoiners(st.j) }));
+      const trials = [];
+      cand.forEach((x) => sets.forEach((s) => {
+        let b = null;
+        coarse.forEach((r) => { const sc = run(x.units, r, s.list).score; if (!b || sc > b.sc) b = { x, s, r, sc }; });
+        trials.push(b);
+      }));
+      trials.sort((a, b) => b.sc - a.sc);
+      let tb = null;
+      trials.slice(0, 6).forEach((t) => {
+        grid.filter((r) => Math.abs(r.inf - t.r.inf) <= 10 && Math.abs(r.lan - t.r.lan) <= 10).forEach((r) => {
+          const sc = run(t.x.units, r, t.s.list).score; if (!tb || sc > tb.sc) tb = { x: t.x, s: t.s, r, sc };
+        });
+      });
+      const jn = pickCommunityJoiners((list) => run(tb.x.units, tb.r, list).score, mode, gen);
+      best = { x: tb.x, r: tb.r, res: run(tb.x.units, tb.r, []), joiners: jn, total: jn.score };
+    }
+    if (!best) finalists.forEach((x) => {
       let fb = null;
       grid.filter((r) => Math.abs(r.inf - x.r0.inf) <= 10 && Math.abs(r.lan - x.r0.lan) <= 10).forEach((r) => {
         const res = run(x.units, r, []);
@@ -1480,7 +1508,7 @@ button.card { font: inherit; }
 </script>
 <script>
 /* WOS-TOP BIACHES — app UI (EN). Vanilla JS, no build step needed at runtime. */
-const APP_VERSION = 'v1.15';
+const APP_VERSION = 'v1.16';
 (function () {
   'use strict';
 
